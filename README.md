@@ -6,7 +6,7 @@ xNFT is a Mobile Application to Manage all NFTs on a decentralized, Public Block
 
 - Mint NFTs
 - Manage NFTs (Create Sell Offer, Create Buy Offer, Accept, Cancel or Burn NFTs)
-- View All NFTs Create on xNFT Mobile app. 
+- View All NFTs Created on xNFT Mobile app. 
 - Buy or Bid available NFTs on xNFT app.
 - Share NFTs in Social Media 
 
