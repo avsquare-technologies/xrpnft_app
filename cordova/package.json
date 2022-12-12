@@ -1,0 +1,52 @@
+{
+  "name": "io.avsquare.xrp",
+  "displayName": "XRP NFT",
+  "version": "1.0.0",
+  "description": "A sample Apache Cordova application that responds to the deviceready event.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "Apache Cordova Team",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "cordova-android": "^10.1.1",
+    "cordova-ios": "^6.2.0",
+    "cordova-plugin-app-launcher": "github:nchutchind/cordova-plugin-app-launcher",
+    "cordova-plugin-camera": "^6.0.0",
+    "cordova-plugin-cors": "^1.3.0",
+    "cordova-plugin-file": "^7.0.0",
+    "cordova-plugin-file-transfer": "^1.7.1",
+    "cordova-plugin-keyboard": "^1.2.0",
+    "cordova-plugin-queries-schemes": "^0.1.6",
+    "cordova-plugin-splashscreen": "^6.0.0",
+    "cordova-plugin-statusbar": "^3.0.0",
+    "cordova-plugin-wkwebview-file-xhr": "^3.0.0"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-keyboard": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-wkwebview-file-xhr": {},
+      "cordova-plugin-queries-schemes": {},
+      "cordova-plugin-appavailability": {},
+      "cordova-plugin-app-launcher": {},
+      "cordova-plugin-cors": {},
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-camera": {
+        "ANDROIDX_CORE_VERSION": "1.6.+"
+      }
+    },
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "dependencies": {
+    "cordova-plugin-appavailability": "0.4.2"
+  }
+}

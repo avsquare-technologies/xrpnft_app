@@ -1,0 +1,379 @@
+<template>
+  <div class="page loginPage" data-name="booknow">
+    <!-- Top Navbar -->
+    <div class="navbar no-hairline navbar-transparent">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+           
+        </div>
+        <div class="right">
+         <a href="/"  class="link" ><i class="icons material-icons">roofing</i></a>
+           
+         
+        </div>
+      </div>
+    </div>
+    <!-- Toolbar-->
+  
+ 
+
+
+  <div class="page-content login-screen-content">
+     
+
+<div class="block heading-block animate__animated animate__fadeIn">
+            <div class="row">
+                <div class="col-60">
+                  <h1>Login</h1></div>
+                 
+            </div>     
+</div>
+     
+      <form id="login-form">
+            <div class="list">
+              <ul>
+                <li class="item-content item-input-outline">
+                  <div class="item-inner">
+                  <div class="item-input-wrap">
+                      <input type="text" name="username" placeholder="Username/Email Address" />
+                    </div>
+                  </div>
+                </li>
+               <li class="item-content item-input-outline">
+                  <div class="item-inner">
+                   <div class="item-input-wrap">
+                      <input type="password" name="password" id="password" placeholder="Your password" />
+
+                    </div>
+                  </div>
+                </li>
+                
+              </ul>
+              <div class="block showpassouter">
+                
+              <label class="toggle">
+                  <input type="checkbox" name="showpass" id="showpass" @change="${showPassword}" />
+                  <span class="toggle-icon"></span> 
+                </label> Show Password
+              </div>
+            </div>
+
+<div class="block loginbtnOuter">
+            <a class=" button button-large button-fill btn-black" @click="${loginaccount}" href="#">Log In</a>
+</div>
+            <div class="list">
+               
+              <div class="block-footer otherLinks">
+                 
+                <p><a class="link home" href="/signup/">Create an Account</a> - <a class="link home" href="/">Back to Home</a></p>
+              </div>
+            </div>
+          
+        </form>
+  
+     
+  </div>
+</div>
+</template>
+<script>
+import $$ from 'dom7';
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+var cart_barge = 0;
+let user_login_status = false;
+let user=[];
+ 
+ let user_billing=[];
+ let user_shipping=[];
+ let toastCenter;
+
+let xummStatus;
+let xumm_status = false;
+ 
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+
+
+
+const showPassword = (e) => {
+
+
+  if(e.target.checked ==true)
+  {
+      $$('#password').attr('type','text');
+  }
+  else
+  { 
+     $$('#password').attr('type','password')
+  } 
+
+
+
+}
+
+
+const loginaccount = () => {
+
+
+
+$f7.preloader.show();
+var formData = $f7.form.convertToData('#login-form');
+
+if((formData.username == '') || (formData.password == '') )
+{
+    $f7.dialog.alert('All Fields are required.');
+    $f7.preloader.hide();
+    return false;
+}
+
+
+      //formData = JSON.stringify(formData);
+      //console.log(formData);
+      $f7.request({
+                      url:api_url+'user_login/' ,
+                      method : "POST",
+                      timeout: 0,
+                      data:formData,
+                      crossDomain: true,
+                      
+                    
+                      success: function(data) {
+
+ console.log(data);
+
+                 var user_data = JSON.parse(data);   
+                 console.log(user_data); 
+
+                 
+
+                 
+
+                 if(user_data.ID)
+                 {
+
+                          
+
+                           var storage = window.localStorage;
+                           (async () => await localStorage.setItem('store_Login', true))();
+                           (async () => await localStorage.setItem('user_profile_data', data))();
+                          // $f7.views.main.router.navigate('/');
+
+                           connect_xumm();
+
+
+
+                 } 
+                 else
+                 {
+
+                          toastCenter = $f7.toast.create({
+                          text: 'Entered Credential is Wrong',
+                          position: 'top',
+                          closeTimeout: 3000,
+                          });
+
+                          toastCenter.open();
+                        //$f7.dialog.alert(data);
+                 }    
+                      
+
+
+                          
+                           
+
+                          $f7.preloader.hide();  
+              }
+                        
+                     
+                      
+
+      });
+
+
+
+
+
+}
+
+
+const get_logged_in_user_data = () => {
+    
+    var storage = window.localStorage;
+    var UserDetails = storage.getItem('user_profile_data');
+     
+    return JSON.parse(UserDetails);
+}
+
+
+const connect_xumm = () => {
+
+
+          let userdata = get_logged_in_user_data();
+          console.log( userdata.ID);
+
+ 
+          $f7.preloader.show();
+
+          
+
+
+              
+              $f7.request({
+                url: api_url+'connect_xumm/?data='+userdata.ID,
+                method : "POST",
+                timeout: 0,
+                success: function(data) {
+
+                  
+                  var res = JSON.parse(data);
+                  console.log(res);
+                  
+
+                  //window.location.href = res.next.always;
+
+                  console.log(res.next.always);
+
+
+                  toastCenter = $f7.toast.create({
+                          text: 'Sign In With XUMM APP',
+                          position: 'top',
+                          closeTimeout: 3000,
+                          });
+
+                          toastCenter.open();
+
+
+                  xummStatus = setInterval(getXummConnection_status, 2000);
+
+                  let xumm_url = 'xumm://xumm.app/sign/'+res.uuid+'/deeplink'; 
+                  //xumm://xumm.app/sign/13d39bdb-d0df-4a12-9790-cb79727d8dc8/deeplink
+/*
+                  window.location.replace(xumm_url); 
+
+                  window.location.href = xumm_url;
+
+                  console.log(xumm_url);*/
+
+
+    window.plugins.launcher.launch({uri:xumm_url}, successCallback, errorCallback);
+
+    // Default handlers
+    var successCallback = function(data) {
+        alert("Success!");
+        // if calling canLaunch() with getAppList:true, data will contain an array named "appList" with the package names of applications that can handle the uri specified.
+    };
+    var errorCallback = function(errMsg) {
+        alert("Error! " + errMsg);
+    }
+
+
+
+                  
+
+ 
+                },
+
+              }); 
+ 
+
+
+
+
+}
+
+
+
+  
+const getXummConnection_status = () => {
+
+let userdata = get_logged_in_user_data();
+  
+
+$f7.request({
+                      url:api_url+'xumm_status/?user_id='+userdata.ID ,
+                      method : "POST",
+                      timeout: 0,
+                      crossDomain: true,
+                      
+                    
+                      success: function(data) {
+
+  
+
+                 var user_data = JSON.parse(data);   
+                 
+
+
+
+                 if(user_data.wallet_account)
+                 {
+                     clearInterval(xummStatus);
+                     console.log('Intervel Cleared');
+                     var storage = window.localStorage;
+                     (async () => await localStorage.setItem('xumm_address', user_data.wallet_account))();
+                     (async () => await localStorage.setItem('xumm_token', user_data.user_device_token))();
+                     xumm_status = true;
+                     user_login_status = true;
+
+                   
+
+                        $f7.preloader.hide();
+                        $f7.views.main.router.navigate('/');
+
+                    
+
+
+
+                     
+                 }
+
+                 
+ 
+                          
+                           
+
+                           
+                          }
+                        
+                     
+                      
+
+      });  
+
+
+
+} 
+
+ 
+
+
+
+const checkLogin = () => {
+
+      var storage = window.localStorage;
+      var login_status = storage.getItem('store_Login');
+ 
+      if(login_status == 'true')
+      {
+         user_login_status = true;
+         $update();
+      }
+
+}
+
+
+ 
+
+ $on('pageInit', (e, page) => {
+
+ checkLogin();
+
+ $f7.views.main.router.clearPreviousHistory()
+
+ });
+ 
+
+return $render;
+}
+</script>

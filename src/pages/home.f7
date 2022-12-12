@@ -1,0 +1,340 @@
+<template>
+  <div class="page home" data-name="home">
+    <!-- Top Navbar -->
+    <div class="navbar navbar-transparent sliding">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="left">
+           
+        </div>
+        <div class="title sliding">NFT using XRPL</div>
+        <div class="right">
+           
+           
+           
+
+        ${xumm_status ? $h`
+         <a class="link" href="/accountinfo/"><i class="f7-icons">person</i></a>
+        
+         <a class="link" href="#" @click="${logout}" ><i class="f7-icons">square_arrow_left</i></a>
+          
+
+         ` : $h`
+
+               ${user_login_status ? $h`
+
+               <a class="link" href="#" @click="${logout}" ><i class="f7-icons">square_arrow_left</i></a>
+
+               `:$h`
+               <a href="/login/"  class="link" ><i class="f7-icons">square_arrow_right</i></a>
+               `}
+         
+         `}
+        </div>
+         
+      </div>
+    </div>
+    
+
+
+
+
+    <!-- Scrollable page content-->
+    <div class="page-content ptr-content hide-navbar-on-scroll" @ptr:refresh=${pageRefresh}>
+
+      <div class="ptr-preloader">
+        <div class="preloader"></div>
+        <div class="ptr-arrow"></div>
+      </div>
+       
+
+<div class="block">
+<h1>Welcome <span>XRP NFT</span></h1>
+</div>
+
+<div class="block buttonBlock">
+
+${xumm_status ? $h`
+<a href="/allxrpltokens/" class="customTab animate__animated animate__bounceIn">XRPL Tokens <br/><small>View All fungible Tokens in XRP Ledger</small></a>
+
+<!-- <a href="/issuetoken/" class="customTab animate__animated animate__bounceIn ">Issue Token<br/><small>Issue a Fungible Token on XRPL</small></a> -->
+
+<a href="/browsenft/" class="customTab animate__animated animate__bounceIn ">Browse NFTs <br/><small>View All NFTs in XRP Ledger</small></a>
+<a href="/gettokens/" class="customTab animate__animated animate__bounceIn ">All My NFTs <br/><small>Your Own NFTs in XRP Ledger</small></a>
+<a href="/createnft/" class="customTab animate__animated animate__bounceIn ">Create NFT <br/><small>Mint NFT in XRP Ledger</small></a>
+<a href="/accountinfo/" class="customTab animate__animated animate__bounceIn ">Account Info <br/><small>Ledger Balance, Account details</small></a>
+` : $h` <a href="#" @click="${connect_xumm}" class="customTab color-red animate__animated animate__bounceIn">Connect XUMM</a>
+<a href="/allxrpltokens/" class="customTab animate__animated animate__bounceIn">XRPL Tokens <br/><small>View All fungible Tokens in XRP Ledger</small></a>
+<a href="/browsenft/" class="customTab animate__animated animate__bounceIn ">Browse NFTs <br/><small>View All NFTs in XRP Ledger</small></a>
+`}
+ 
+
+
+</div>
+   
+
+ 
+
+    
+    </div>
+  </div>
+</template>
+<script>
+import $$ from 'dom7';
+ 
+
+ 
+
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+
+let user = [];
+let wallet_address = 'rnjk7SyUmLrYKtSLAg1dAxHWRjAyyabY3w';
+
+
+let xummStatus;
+let xumm_status = false;
+let user_login_status = false;
+
+
+
+const logout = () => {
+
+    (async () => await localStorage.setItem('store_Login', false))();
+    (async () => await localStorage.setItem('user_profile_data', ''))();
+    (async () => await localStorage.setItem('xumm_address', ''))();
+    (async () => await localStorage.setItem('xumm_token', ''))();
+
+    
+    xumm_status = false;
+    user_login_status = false;
+    $update();
+    if(!user_login_status)
+    {
+       $f7.views.main.router.navigate('/');
+    }
+
+} 
+
+
+
+const get_logged_in_user_data = () => {
+    
+    var storage = window.localStorage;
+    var UserDetails = storage.getItem('user_profile_data');
+
+    if(UserDetails)
+    {
+     
+    return JSON.parse(UserDetails);
+    }
+    else
+    {
+        $f7.views.main.router.navigate('/login/');
+    }
+}
+
+ 
+const connect_xumm = () => {
+
+
+
+
+          let userdata = get_logged_in_user_data();
+          console.log( userdata.ID);
+
+ 
+          $f7.preloader.show();
+
+ 
+
+
+              
+              $f7.request({
+
+
+                url: api_url+'connect_xumm/?data='+userdata.ID,
+                method : "POST",
+                timeout: 0,
+                success: function(data) {
+
+                  
+                  var res = JSON.parse(data);
+                  console.log(res);
+                  
+
+                  //window.location.href = res.next.always;
+
+                  console.log(res.next.always);
+
+                  xummStatus = setInterval(getXummConnection_status, 5000);
+
+                  let xumm_url = 'xumm://xumm.app/sign/'+res.uuid+'/deeplink'; 
+ 
+
+    window.plugins.launcher.launch({uri:xumm_url}, successCallback, errorCallback);
+
+    // Default handlers
+    var successCallback = function(data) {
+        alert("Success!");
+        // if calling canLaunch() with getAppList:true, data will contain an array named "appList" with the package names of applications that can handle the uri specified.
+    };
+    var errorCallback = function(errMsg) {
+        alert("Error! " + errMsg);
+    }
+ 
+
+
+                  
+
+ 
+                },
+
+              }); 
+ 
+
+
+
+
+}
+
+
+
+  
+const getXummConnection_status = () => {
+
+let userdata = get_logged_in_user_data();
+  
+
+$f7.request({
+                      url:api_url+'xumm_status/?user_id='+userdata.ID ,
+                      method : "POST",
+                      timeout: 0,
+                      crossDomain: true,
+                      
+                    
+                      success: function(data) {
+
+  
+
+                 var user_data = JSON.parse(data);   
+                 
+
+
+
+                 if(user_data.wallet_account)
+                 {
+                     clearInterval(xummStatus);
+                     console.log('Intervel Cleared');
+                     var storage = window.localStorage;
+                     (async () => await localStorage.setItem('xumm_address', user_data.wallet_account))();
+                     (async () => await localStorage.setItem('xumm_token', user_data.user_device_token))();
+                     xumm_status = true;
+                     user_login_status = true;
+
+
+               
+                   
+                        $f7.preloader.hide();
+                        $f7.views.main.router.navigate('/');
+
+                   
+
+
+                     $update();
+                     $f7.preloader.hide();
+                  }
+
+                 
+ 
+                          
+                           
+
+                           
+                          }
+                        
+                     
+                      
+
+      });  
+
+
+
+} 
+
+
+const checkLogin = () => {
+
+      var storage = window.localStorage;
+      var login_status = storage.getItem('store_Login');
+
+ 
+      if(login_status == 'true')
+      {
+
+         user_login_status = true;
+         $update();
+      }
+      else
+      {
+          user_login_status = false;
+          $f7.views.main.router.navigate('/login/');
+      }
+
+}
+
+
+const get_wallet_detail = () => {
+
+ 
+  var xumm_address = localStorage.getItem('xumm_address');
+  
+  if(xumm_address) {  xumm_status = true; } 
+  wallet_address = xumm_address;
+  $update();
+
+
+} 
+
+
+
+
+const pageRefresh = (e, done) => {
+
+     setTimeout(() => { 
+       checkLogin();
+       getXummConnection_status();
+       // Update state to rerender
+       $update();
+       // When loading done, we need to reset it
+        done();
+      }, 800);
+
+}
+
+
+
+ 
+ 
+ 
+
+$on('pageInit', (e, page) => {
+
+ 
+checkLogin();
+get_wallet_detail();
+
+console.log(xumm_status);
+ 
+
+ });
+
+
+
+
+
+
+  return $render;
+}
+</script>

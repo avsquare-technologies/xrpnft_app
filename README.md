@@ -1,34 +1,100 @@
-# xNFT Mobile App (Hybrid Mobile App - Android, iOS)
+# XRP NFT
 
-## What is XNFT? 
+## Framework7 CLI Options
 
-xNFT is a Mobile Application to Manage all NFTs on a decentralized, Public Blockchain XRP Ledger (XRPL). 
+Framework7 app created with following options:
 
-- Mint NFTs
-- Manage NFTs (Create Sell Offer, Create Buy Offer, Accept, Cancel or Burn NFTs)
-- View All NFTs Created on xNFT Mobile app. 
-- Buy or Bid available NFTs on xNFT app.
-- Share NFTs in Social Media 
+```
+{
+  "cwd": "/Users/arunanithiarul/Documents/mobile-apps/nft",
+  "type": [
+    "cordova"
+  ],
+  "name": "XRP NFT",
+  "pkg": "io.avsquare.xrp",
+  "framework": "core",
+  "template": "blank",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "cordova": {
+    "folder": "cordova",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "plugins": [
+      "cordova-plugin-statusbar",
+      "cordova-plugin-keyboard",
+      "cordova-plugin-splashscreen"
+    ]
+  },
+  "theming": {
+    "customColor": true,
+    "color": "#19ff83",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false
+}
+```
+
+## Install Dependencies
+
+First of all we need to install dependencies, run in terminal
+```
+npm install
+```
+
+## NPM Scripts
+
+* 🔥 `start` - run development server
+* 🔧 `dev` - run development server
+* 🔧 `build` - build web app for production
+* 📱 `build-cordova` - build cordova app
+* 📱 `build-cordova-ios` - build cordova iOS app
+* 📱 `cordova-ios` - run dev build cordova iOS app
+* 📱 `build-cordova-android` - build cordova Android app
+* 📱 `cordova-android` - run dev build cordova Android app
+
+## Vite
+
+There is a [Vite](https://vitejs.dev) bundler setup. It compiles and bundles all "front-end" resources. You should work only with files located in `/src` folder. Vite config located in `vite.config.js`.
+## Cordova
+
+Cordova project located in `cordova` folder. You shouldn't modify content of `cordova/www` folder. Its content will be correctly generated when you call `npm run cordova-build-prod`.
 
 
-## Technologies & Languages for Devlopement
-
-- Apache Cordova
-- Framework7
-- WordPress CMS
-- HTML5, CSS3 and Javascript, jQuery
-- PHP and MySQL
 
 
-## What is Cordova?
 
-Apache Cordova enables software programmers to build hybrid web applications for mobile devices using CSS3, HTML5, and JavaScript, instead of relying on platform-specific APIs like those in Android, iOS, or Windows Phone.
+## Assets
+
+Assets (icons, splash screens) source images located in `assets-src` folder. To generate your own icons and splash screen images, you will need to replace all assets in this directory with your own images (pay attention to image size and format), and run the following command in the project directory:
+
+```
+framework7 assets
+```
+
+Or launch UI where you will be able to change icons and splash screens:
+
+```
+framework7 assets --ui
+```
 
 
-## What is Framework7?
 
-Framework7 is an open-source and free framework to develop mobile, desktop or web apps.
+## Documentation & Resources
 
-# Why WordPress?
+* [Framework7 Core Documentation](https://framework7.io/docs/)
 
-WordPress is an open-source content management system (CMS) used to create Websites but xNFT Mobile application is going to use WordPress as an Intermediate Gateway to Transfer data from Mobile to MySql Database and Database to Mobile application using REST API integration and also the backend for Administrator to manage or debug or user Support. 
+
+
+* [Framework7 Icons Reference](https://framework7.io/icons/)
+* [Community Forum](https://forum.framework7.io)
+
+## Support Framework7
+
+Love Framework7? Support project by donating or pledging on:
+- Patreon: https://patreon.com/framework7
+- OpenCollective: https://opencollective.com/framework7

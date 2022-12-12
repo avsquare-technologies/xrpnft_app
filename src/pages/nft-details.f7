@@ -1,0 +1,711 @@
+<template>
+  <div class="page home" data-name="get-tokens">
+    <!-- Top Navbar -->
+    <div class="navbar navbar-transparent slidin">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="left">
+           
+        </div>
+        <div class="title sliding">NFT using XRPL</div>
+        <div class="right">
+         <a href="/"  class="link back" ><i class="icons f7-icons">chevron_up</i></a>
+                  ${xumm_status ? $h`
+         <a class="link" href="/accountinfo/"><i class="f7-icons">person</i></a>
+        
+         <a class="link" href="#" @click="${logout}" ><i class="f7-icons">square_arrow_left</i></a>
+          
+
+         ` : $h`
+
+               ${user_login_status ? $h`
+
+               <a class="link" href="#" @click="${logout}" ><i class="f7-icons">square_arrow_left</i></a>
+
+               `:$h`
+               <a href="/login/"  class="link" ><i class="f7-icons">square_arrow_right</i></a>
+               `}
+         
+         `}
+
+
+        </div>
+         
+      </div>
+    </div>
+    
+
+
+
+
+    <!-- Scrollable page content-->
+<div class="page-content hide-navbar-on-scroll" >
+        
+       
+
+<div class="block">
+<h1>NFT <span>Detail</span></h1>
+</div>
+
+ 
+<div class="block">
+<div class="nftDetailContent" >
+   
+</div>
+</div>
+
+<div class="block">
+<h2>More from same Collections</h2>
+<div class="sameCollection row"></div>
+</div>
+ 
+    
+    </div>
+  </div>
+</template>
+<script>
+import $$ from 'dom7';
+
+import {XummSdk}  from 'xumm-sdk';
+const Sdk = new XummSdk('fa408894-ca6e-42c6-90ef-12cc81934406', 'c1719321-d6ae-4f2e-b8cb-864a971c07b6');
+
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+const xrpl_tokens_url = 'https://api.xrpldata.com/api/v1/xls20-nfts/all/issuers'; 
+const xrpl_nft_issuer_api = 'https://api.xrpldata.com/api/v1/xls20-nfts/issuer/';
+const client = new xrpl.Client("wss://xrplcluster.com/");
+
+
+
+
+let user = [];
+let wallet_address = '';
+let token_item = '';
+let more_token_item = '';
+let all_tokens;
+let total_tokens;
+let nft_uri;
+let nft_owner_wallet_address;
+
+
+let account;
+let domain;
+let username;
+let twitter;
+let kyc;
+
+let tokens;
+
+let currency;
+let arr = [];
+
+let all_nfts = [];
+let issuers_data = [];
+
+let allowInfinite = true;
+let hasMoreItems = true;
+let lastItem = 20;
+
+let sellOffersFinalList = [];
+
+let nftid;
+let finalAmount;
+
+let xummStatus;
+let xumm_status = false;
+let user_login_status = false;
+let user_token;
+
+
+const logout = () => {
+
+    (async () => await localStorage.setItem('store_Login', false))();
+    (async () => await localStorage.setItem('user_profile_data', ''))();
+    (async () => await localStorage.setItem('xumm_address', ''))();
+    (async () => await localStorage.setItem('xumm_token', ''))();
+
+    
+    xumm_status = false;
+    user_login_status = false;
+    $update();
+    if(!user_login_status)
+    {
+       $f7.views.main.router.navigate('/');
+    }
+
+} 
+
+const get_wallet_detail = () => {
+
+ 
+  var xumm_address = localStorage.getItem('xumm_address');
+
+  var xumm_token = localStorage.getItem('xumm_token');
+  
+  if(xumm_address) {  xumm_status = true; } 
+  wallet_address = xumm_address;
+  user_token = xumm_token; console.log('user_token',user_token);
+  $update();
+
+
+} 
+
+
+
+
+
+const get_logged_in_user_data = () => {
+    
+    var storage = window.localStorage;
+    var UserDetails = storage.getItem('user_profile_data');
+
+    if(UserDetails)
+    {
+     
+      return JSON.parse(UserDetails);
+    }
+     
+}
+
+
+const get_flags = ( flagno ) => {
+
+   
+   var html;
+
+   if(flagno == 1)
+   {
+         html = 'Burnable';
+   }
+   else if(flagno == 2)
+   {
+        html = 'OnlyXRP';
+   }
+   else if(flagno == 3)
+   {
+       html = 'Burnable, OnlyXRP';
+   }
+   else if(flagno == 4)
+   {
+        html = 'TrustLine';
+   }
+   else if(flagno == 5)
+   {
+        html = 'Burnable, TrustLine';
+   }
+   else if(flagno == 6)
+   {
+        html = 'OnlyXRP, TrustLine';
+   }
+   else if(flagno == 7)
+   {
+        html = 'Burnable, OnlyXRP, TrustLine';
+   }
+   else if(flagno == 8)
+   {
+        html = 'Transferable';
+   }
+   else if(flagno == 9)
+   {
+        html = 'Burnable, Transferable';
+   }
+   else if(flagno == 10)
+   {
+        html = 'OnlyXRP, Transferable';
+   }
+   else if(flagno == 11)
+   {
+        html = 'Burnable, OnlyXRP, Transferable';
+   }
+   else if(flagno == 12)
+   {
+        html = 'Burnable, OnlyXRP, TrustLine, Transferable';
+   }
+
+
+  
+
+  return '<li>\
+              <div class="item-inner">\
+                <div class="item-title-row">\
+                  <div class="item-title">Flags</div>\
+                </div>\
+                <div class="item-text">'+html+'</div>\
+              </div>\
+          </li>';
+
+}
+
+
+
+
+const hex_to_ascii = (str1) => {
+  
+  var hex  = str1.toString();
+  var str = '';
+  for (var n = 0; n < hex.length; n += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+  }
+  return str;
+
+}  
+
+
+function isObject(objValue) {
+  return objValue && typeof objValue === 'object' && objValue.constructor === Object;
+}
+
+
+const display_val = ( val ) => {
+
+   let data = isObject(val);
+
+   if(data)
+   {
+       let items = ''; 
+       for(var i in val){
+           
+           items += val[i]+', ';
+       }
+       return items;
+   }
+   else
+   {
+       return val;
+   }
+
+     
+}
+
+
+
+
+
+async function get_nft_by_issuer ( address, nftid ) 
+{
+
+
+
+        const client = new xrpl.Client("wss://xrplcluster.com/")
+
+         await client.connect()
+
+          const response = await client.request({
+            "command": "account_nfts",
+            "account": address,
+            "ledger_index": "validated"
+          })
+          console.log(response)
+
+         await client.disconnect();
+    
+
+    all_nfts = response.result.account_nfts;
+
+    console.log('nftid:',nftid);
+
+    let nft_detail = all_nfts.filter( 
+
+            item => {   
+
+              if(item.NFTokenID == nftid){  
+                   return item;
+
+              }
+
+
+          })
+
+console.log(nft_detail);
+
+            let item_url = hex_to_ascii(nft_detail[0].URI); console.log('item_url',item_url);
+            let result = item_url.includes("https://");
+            if(result)
+            {
+                   let ipfs_result = item_url.includes("ipfs");
+                   let is_json_file = item_url.includes(".json");
+                   if(ipfs_result || is_json_file )
+                   {
+
+                        //console.log('json', item_url);
+                        fetch(item_url)
+                            .then((response) => response.json())
+                            .then((json) => {
+
+                                console.log(json);
+
+                        if( (json.image != undefined) && (json.image != '') ){
+                            let nft_image = '<div class="colanimate__animated animate__fadeIn textcenter"><img src="'+json.image+'" /></div>';
+
+
+
+nft_image += '<div class="row mbTop50"><div class="col-100"> <button class="col button button-fill button-round createbuyoffer"  >Create Offer</button></div></div>';
+
+
+//offers Tabs
+nft_image += '<h2>Offers</h2> <div class="toolbar tabbar toolbar-bottom">\
+      <div class="toolbar-inner">\
+        <a href="#selloffer" class="tab-link tab-link-active">Sell Offers</a>\
+        <a href="#buyoffer" class="tab-link">Buy Offers</a>\
+        </div>\
+    </div><div class="tabs">\
+      <div id="selloffer" class="tab tab-active sellOfferContent"><div class="block">\
+          <p>Tab 1 content</p></div></div>\
+      <div id="buyoffer" class="tab buyOfferContent"><div class="block">\
+          <p>Tab 2 content</p></div></div>\
+      </div>';
+
+
+nft_image += '<h2>Details</h2><div class="list media-list nfts_data"><ul>';
+
+nft_image += '<li>\
+              <div class="item-inner">\
+                <div class="item-title-row">\
+                  <div class="item-title">Owner</div>\
+                </div>\
+                <div class="item-text">'+response.result.account+'</div>\
+              </div>\
+          </li><li>\
+              <div class="item-inner">\
+                <div class="item-title-row">\
+                  <div class="item-title">Issuer</div>\
+                </div>\
+                <div class="item-text">'+nft_detail[0].Issuer+'</div>\
+              </div>\
+          </li>';
+
+nft_image += get_flags(nft_detail[0].Flags);
+
+  nft_image +=        '<li>\
+              <div class="item-inner">\
+                <div class="item-title-row">\
+                  <div class="item-title">Transfer Fee</div>\
+                </div>\
+                <div class="item-text">'+nft_detail[0].TransferFee/1000+'%</div>\
+              </div>\
+          </li><li>\
+              <div class="item-inner">\
+                <div class="item-title-row">\
+                  <div class="item-title">Taxon</div>\
+                </div>\
+                <div class="item-text">'+nft_detail[0].NFTokenTaxon+'</div>\
+              </div>\
+          </li>'; 
+
+
+
+for(var i in json){
+
+
+if( (json[i] != '') && ( i != 'attributes') && ( i != 'id') ){
+
+
+   nft_image += '<li>\
+              <div class="item-inner">\
+                <div class="item-title-row">\
+                  <div class="item-title">'+i+'</div>\
+                </div>\
+                <div class="item-text">'+display_val(json[i])+'</div>\
+              </div>\
+          </li>'; 
+
+ 
+ 
+ 
+}
+
+}
+
+nft_image += '</ul></div>';
+
+
+
+                            $$('.nftDetailContent').html(nft_image);
+                            get_sellbuy_offers();
+                        }
+ 
+
+
+                            }  );
+
+
+
+                   }
+                   else
+                   {
+                        if( (item_url != undefined) && (item_url != '') ){
+                            let nft_image = '<div class="col-50 animate__animated animate__fadeIn textcenter"><a href="/nft-detail/"><img src="'+item_url+'" /></a></div>';
+                            $$('.nftDetailContent').html(nft_image);
+                            get_sellbuy_offers();
+                        }
+
+                   }
+                   
+
+            } 
+
+load_other_col_items( address );
+
+
+$update();
+  
+}
+
+
+const load_other_col_items = ( address ) => {
+
+    
+all_nfts.forEach( 
+
+    item => {   
+
+      if(item.URI != undefined){  
+         
+
+        let item_url = hex_to_ascii(item.URI);
+
+            let result = item_url.includes("https://");
+            if(result)
+            {
+                   let ipfs_result = item_url.includes("ipfs");
+                   let is_json_file = item_url.includes(".json");
+                   if(ipfs_result || is_json_file )
+                   {
+
+                        //console.log('json', item_url);
+                        fetch(item_url)
+                            .then((response) => response.json())
+                            .then((json) => {
+
+                                
+
+                        if( (json.image != undefined) && (json.image != '') ){
+                            let nft_image = '<div class="col-50 animate__animated animate__fadeIn"><a href="/nft-detail/'+address+'/'+item.NFTokenID+'"><img src="'+json.image+'" /></a></div>';
+                            $$('.sameCollection').append(nft_image);
+                            $update();
+                        }
+ 
+
+
+                            }  );
+
+                   }
+                   else
+                   {
+                        if( (item_url != undefined) && (item_url != '') ){
+                            let nft_image = '<div class="col-50 animate__animated animate__fadeIn"><a href="/nft-detail/'+address+'/'+item.NFTokenID+'"><img src="'+item_url+'" /></a></div>';
+                            $$('.sameCollection').append(nft_image);
+                            $update();
+                        }
+
+                   }
+            }
+            
+
+
+
+     
+
+
+
+
+      }
+
+     }
+     
+
+ 
+    );
+
+
+$update();
+
+}
+
+
+
+$(document).on('click', '.get_sellbuy_offers', function () {
+  //
+
+ get_sellbuy_offers();
+
+});
+
+const get_sellbuy_offers = async() => {
+
+console.log('nftid',nftid);
+
+     let nftSellOffers
+         try {
+          nftSellOffers = await client.request({
+        method: "nft_sell_offers",
+        tokenid: nftid
+        })
+
+       console.log(JSON.stringify(nftSellOffers,null,2))
+       sellOffersFinalList.push(nftSellOffers.result.offers[0].index);
+       console.log('Index: '+ nftSellOffers.result.offers[0].index);
+       console.log(nftSellOffers);
+
+
+
+        } catch (err) {
+          console.log("No sell offers.");
+          $$('.sellOfferContent .block').html('<center><i class="f7-icons">rectangle_on_rectangle_angled</i> <br/> No sell offers.</center>');
+      }
+       
+       console.log("***Buy Offers***")
+       let nftBuyOffers
+       try {
+         nftBuyOffers = await client.request({
+      method: "nft_buy_offers",
+      tokenid: nftid })
+
+console.log(JSON.stringify(nftBuyOffers,null,2))
+
+
+       } catch (err) {
+         console.log("No buy offers.");
+
+         $$('.buyOfferContent .block').html('<center><i class="f7-icons">rectangle_on_rectangle_angled</i> <br/> No buy offers.</center>');
+
+
+       }
+       
+
+
+       // Post results
+    let ticketListHTML = '';
+    for(let step=0;step<sellOffersFinalList.length;step++){
+      ticketListHTML = ticketListHTML + '<p>Offer ID: <a href="http://localhost:3001/'+sellOffersFinalList[step]+'">'+sellOffersFinalList[step]+'</a></p>';
+    }
+
+
+ console.log('ticketListHTML',ticketListHTML);
+
+
+
+} 
+
+
+$(document).on('click', '.createbuyoffer', function () {
+  //
+
+  $f7.dialog.close();
+  $f7.dialog.prompt('Your Offer Amount?', function (amount) {
+          $f7.dialog.confirm('Your Offer amount is ' + amount + ' XRP ?', function () {
+             
+          $f7.dialog.close(); 
+          createbuyoffer( amount );
+
+          });
+        });  
+
+ 
+
+});
+
+const createbuyoffer = async( amount ) => {
+
+
+let userdata = get_logged_in_user_data();
+ console.log( userdata.ID);
+
+finalAmount = amount * 1000000;;
+
+ 
+
+  let request = {
+    txjson: {
+      TransactionType: "NFTokenCreateOffer",
+      Account: wallet_address,
+      Owner: nft_owner_wallet_address,
+      NFTokenID: nftid,
+      Amount: finalAmount.toString(),
+      Flags: null
+    },
+    custom_meta: { 
+         blob : { 
+           user_id : userdata.ID
+         } 
+ },
+
+    user_token: user_token.toString()
+  }
+
+
+  //request = JSON.stringify(request);
+
+console.log('NFTokenCreateOffer', request);
+
+  $f7.request({
+                url: api_url+'CreateNFTOffer/',
+                method : "POST",
+                data: request,
+                timeout: 0,
+                success: function(data) {
+
+                  
+                  var res = JSON.parse(data);
+                  console.log(res); 
+
+                  console.log(res.next.always);
+                  //xummStatus = setInterval(getXummConnection_status, 2000);
+
+                  let xumm_url = 'xumm://xumm.app/sign/'+res.uuid+'/deeplink'; 
+ 
+
+                    window.plugins.launcher.launch({uri:xumm_url}, successCallback, errorCallback);
+
+                    // Default handlers
+                    var successCallback = function(data) {
+                        alert("Success!");
+                        // if calling canLaunch() with getAppList:true, data will contain an array named "appList" with the package names of applications that can handle the uri specified.
+                    };
+                    var errorCallback = function(errMsg) {
+                        alert("Error! " + errMsg);
+                    }     
+
+                  $update();
+                                
+ 
+                },
+                 
+
+              });
+  
+
+
+
+
+
+
+}
+ 
+ 
+ 
+
+$on('pageInit', (e, page) => {
+
+  nftid  = page.route.params.nftid ;
+  nft_owner_wallet_address = page.route.params.owneraddress;
+
+  console.log('nftid',nftid);
+  console.log('nft_owner_wallet_address',nft_owner_wallet_address);
+
+  get_wallet_detail();  
+
+  get_nft_by_issuer( page.route.params.owneraddress,  page.route.params.nftid );
+
+ 
+   
+ });
+
+
+ 
+
+
+  return $render;
+}
+</script>

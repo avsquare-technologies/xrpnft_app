@@ -1,0 +1,308 @@
+<template>
+  <div class="page home" data-name="get-tokens">
+    <!-- Top Navbar -->
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="left">
+           
+        </div>
+        <div class="title sliding">NFT using XRPL</div>
+        <div class="right">
+          <a href="/"  class="link" ><i class="icons f7-icons">chevron_up</i></a>
+           <a href="/signup/"  class="link" ><i class="icons f7-icons">square_arrow_right</i></a>
+           <a href="/signup/"  class="link" ><i class="icons f7-icons">person</i></a>
+           <a href="#"  class="link" ><i class="icons f7-icons">wallet</i></a>
+        </div>
+         
+      </div>
+    </div>
+    
+
+
+
+
+    <!-- Scrollable page content-->
+    <div class="page-content">
+       
+
+<div class="block">
+<h1>All My <span>xNFTs</span></h1>
+</div>
+
+ 
+
+<div class="tokenList" innerHTML="${all_tokens}">
+   
+<div class="skeleton-effect-wave skeleton-text">   
+
+
+  <div class="card demo-card-header-pic">
+         <div class="CardMedia">
+            <div class="cardImage">
+              <div class="skeleton-block" style="width: 100px;height:100px;"></div>
+            </div>
+         
+
+            <div class="cardCnt">
+              <p>----------</p>
+              <p class="date">----------------------</p>
+              <p>TokenTaxon: <span>----------------</span></p>
+            </div> 
+
+        </div>
+
+        <div class="card-content card-content-padding">
+          Token ID<div class="code_block">0000000000000</div>
+        </div>
+        
+        <div class="card-footer"><a href="" class="burnLink">Burn Token</a><a href="#" class="link checkOffer">Check Offer</a></div>
+  </div>
+
+  <div class="card demo-card-header-pic">
+         <div class="CardMedia">
+            <div class="cardImage">
+              <div class="skeleton-block" style="width: 100px;height:100px;"></div>
+            </div>
+         
+
+            <div class="cardCnt">
+              <p>----------</p>
+              <p class="date">----------------------</p>
+              <p>TokenTaxon: <span>----------------</span></p>
+            </div> 
+
+        </div>
+
+        <div class="card-content card-content-padding">
+          Token ID<div class="code_block">0000000000000</div>
+        </div>
+        
+        <div class="card-footer"><a href="" class="burnLink">Burn Token</a><a href="#" class="link checkOffer">Check Offer</a></div>
+  </div>
+
+
+
+
+</div>
+
+ 
+
+
+
+</div>
+
+
+
+
+ 
+   
+
+ 
+
+    
+    </div>
+  </div>
+</template>
+<script>
+import $$ from 'dom7';
+
+
+
+
+
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+
+let user = [];
+let wallet_address = '';
+let nft_item = '';
+let all_tokens;
+
+ 
+
+const get_wallet_detail = () => {
+
+ 
+  var xumm_address = localStorage.getItem('xumm_address');
+   
+  wallet_address = xumm_address;
+  $update();
+
+
+} 
+
+
+const hex_to_ascii = (str1) => {
+  
+  var hex  = str1.toString();
+  var str = '';
+  for (var n = 0; n < hex.length; n += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+  }
+  return str;
+
+}  
+
+
+
+const list_all_token = async() => {
+
+ 
+  console.log(wallet_address);
+
+  const client = new xrpl.Client("wss://s.altnet.rippletest.net/")
+  await client.connect()
+
+  const nfts = await client.request({
+        method: "account_nfts",
+        account: wallet_address  
+  })
+
+
+ 
+  
+  const nft_count = nfts.result.account_nfts.length;
+  const account_nfts = nfts.result.account_nfts;
+
+  console.log(account_nfts); 
+
+  for(var i=0; i<nft_count; i++)
+  {
+
+      var cid = hex_to_ascii(account_nfts[i].URI);
+      var newcid = cid.replace("ipfs://", "");
+
+
+      var flag_list = get_flags(account_nfts[i].Flags);
+
+     
+     nft_item += '<div class="card demo-card-header-pic animate__animated animate__bounceIn card'+account_nfts[i].nft_serial+'">\
+         <div class="CardMedia"><div class="cardImage"><img src="https://'+newcid+'.ipfs.nftstorage.link/" width="100" /></div><div class="cardCnt"><p>Serial: '+account_nfts[i].nft_serial+'</p><p class="date">Transfer Fee: <span>'+account_nfts[i].TransferFee / 1000+'%</span></p>\
+          <p>'+flag_list+'</p>\
+          <p>TokenTaxon: <span>'+account_nfts[i].TokenTaxon+'</span></p>\
+          <a href="#" class="viewTokenID" data-serial="'+account_nfts[i].nft_serial+'" >View Token ID</a></div></div>\
+        <div class="card-content card-content-padding animate__animated animate__fadeIn">\
+          Token ID<div class="code_block">'+account_nfts[i].TokenID+'</div>\
+        </div>\
+        <div class="card-footer"><a href="" class="burnLink">Burn Token</a><a href="#" class="link checkOffer">Check Offer</a></div>\
+      </div>';
+
+
+  }
+
+
+  //$$('.tokenList').html(nft_item);
+
+
+  all_tokens = nft_item;
+
+  if(nft_item)
+  {
+     all_tokens = nft_item;
+  }
+  else
+  {
+      all_tokens = '<div class="block">No NFTs Found.<br/> <a href="/createnft/" class="col button button-fill color-green">Create NFT</a></div>';
+  }
+
+
+  $update();
+  
+
+  client.disconnect()
+
+  
+
+
+}
+ 
+
+
+const get_flags = ( flagno ) => {
+
+   
+   var html;
+
+   if(flagno == 1)
+   {
+         html = 'Burnable';
+   }
+   else if(flagno == 2)
+   {
+        html = 'OnlyXRP';
+   }
+   else if(flagno == 3)
+   {
+       html = 'Burnable, OnlyXRP';
+   }
+   else if(flagno == 4)
+   {
+        html = 'TrustLine';
+   }
+   else if(flagno == 5)
+   {
+        html = 'Burnable, TrustLine';
+   }
+   else if(flagno == 6)
+   {
+        html = 'OnlyXRP, TrustLine';
+   }
+   else if(flagno == 7)
+   {
+        html = 'Burnable, OnlyXRP, TrustLine';
+   }
+   else if(flagno == 8)
+   {
+        html = 'Transferable';
+   }
+   else if(flagno == 9)
+   {
+        html = 'Burnable, Transferable';
+   }
+   else if(flagno == 10)
+   {
+        html = 'OnlyXRP, Transferable';
+   }
+   else if(flagno == 11)
+   {
+        html = 'Burnable, OnlyXRP, Transferable';
+   }
+   else if(flagno == 12)
+   {
+        html = 'Burnable, OnlyXRP, TrustLine, Transferable';
+   }
+  
+
+  return 'Flag: <span>'+html+'</span>';
+
+}
+
+
+
+
+ 
+ 
+
+$on('pageInit', (e, page) => {
+
+
+ get_wallet_detail();
+ list_all_token();
+ 
+
+ });
+
+
+ $$(document).on('click', '.viewTokenID', function (e) {
+
+    var serial = $$(this).attr('data-serial');
+    $$('.card'+serial+' .card-content').toggleClass('active'); 
+ });
+
+
+
+  return $render;
+}
+</script>

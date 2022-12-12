@@ -1,0 +1,32 @@
+{
+  "cwd": "/Users/arunanithiarul/Documents/mobile-apps/nft",
+  "type": [
+    "cordova"
+  ],
+  "name": "XRP NFT",
+  "pkg": "io.avsquare.xrp",
+  "framework": "core",
+  "template": "blank",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "cordova": {
+    "folder": "cordova",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "plugins": [
+      "cordova-plugin-statusbar",
+      "cordova-plugin-keyboard",
+      "cordova-plugin-splashscreen"
+    ]
+  },
+  "theming": {
+    "customColor": true,
+    "color": "#19ff83",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false
+}

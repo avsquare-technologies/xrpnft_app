@@ -1,0 +1,348 @@
+<template>
+  <div class="page" data-name="create-nft">
+    <!-- Top Navbar -->
+    <div class="navbar navbar-transparent sliding">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="left">
+           <a class="link back" ><i class="icons f7-icons">chevron_up</i></a>
+        </div>
+        <div class="title sliding">NFT using XRPL</div>
+        <div class="right">
+           <a href="/signup/"  class="link" ><i class="icons f7-icons">square_arrow_right</i></a>
+        </div>
+         
+      </div>
+    </div>
+ 
+    <!-- Scrollable page content-->
+    <div class="page-content">
+       
+
+<div class="block">
+<h2>Create NFT</h2>
+</div>
+ 
+    
+<form class="createNftForm list" id="createNftForm">
+        <ul>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Item Name</div>
+                <div class="item-input-wrap">
+                   <input type="text" placeholder="Enter item name" name="itemName" class="itemName" required />
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">External Link</div>
+                <div class="item-input-wrap">
+                   <input type="text" placeholder="Enter External Link" name="itemExternal" class="itemExternal" required />
+                   <small>xNFT will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.</small>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Item Description</div>
+                <div class="item-input-wrap">
+                   <textarea class="desc" name="description" class="description" required></textarea>
+                   <small>The description will be included on the item\'s detail page underneath its image. Markdown syntax is supported.</small>
+                </div>
+              </div>
+            </div>
+          </li>
+
+ 
+
+          <li>
+          <a class="item-link smart-select smart-select-init ad_cat">
+          </a>
+        </li>
+
+        <li>
+          <a class="item-link smart-select smart-select-init ad_loc">
+            
+          </a>
+        </li>
+
+        <li>
+          <input type="hidden" name="userId"  />
+          <div class="block block-strong">
+          <a href="#" @click="${create_ad}" class="col button button-fill button-large button-raised">Next</a>
+           </div>
+        </li>
+
+        </ul>
+</form>
+
+
+<form class="createNftFormstep2 list" id="createNftFormstep2">
+
+
+<div id="img-preview"></div>
+
+        <ul>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label"></div>
+                <div class="item-input-wrap">
+                  
+
+<div class="uploadimage">
+<img id="imageloc" /><br /><a class="button convert-form-to-data button-fill" @click="openFilePicker">Choose Photo</a>
+ </div>
+
+
+
+                </div>
+              </div>
+            </div>
+          </li>
+ 
+
+        <li>
+           
+          <div class="block block-strong">
+            <input type="hidden" id="list_id" name="list_id" />
+          
+           </div>
+        </li>
+
+        </ul>
+</form>
+
+
+
+ 
+
+    
+    </div>
+  </div>
+</template>
+<script>
+import $$ from 'dom7';
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+
+//Fetch Categories
+const get_categories = () => {
+
+  $f7.preloader.show();
+              
+              $f7.request({
+                url: api_url+'get_categories/',
+                method : "GET",
+                timeout: 0,
+                success: function(data) {
+
+                    var all_cats = JSON.parse(data);
+                    $$('.ad_cat').html(all_cats);
+                    $f7.preloader.hide();
+                },
+
+              });
+}
+
+//Fetch Locations
+const get_locations = () => {
+
+  $f7.preloader.show();
+              
+              $f7.request({
+                url: api_url+'get_locations/',
+                method : "GET",
+                timeout: 0,
+                success: function(data) {  
+
+                    var all_loc = JSON.parse(data);
+                    $$('.ad_loc').html(all_loc);
+                    $f7.preloader.hide();
+                },
+
+              });
+}
+
+
+//Create Ad
+const create_ad = () => {
+
+
+
+$f7.preloader.show();
+var formData = $f7.form.convertToData('#createNftForm');  
+
+console.log(formData);
+ 
+
+
+$f7.request({
+                url: api_url+'create-classified/',
+                method : "POST",
+                timeout: 0,
+                data:formData,
+                 
+                
+                success: function(data) {
+
+                  console.log(data);
+
+                    $f7.preloader.hide();
+               
+                    var obj = JSON.parse(data);   
+
+                     
+                    console.log(obj);
+                   
+
+                      if(obj.status)
+                      {
+
+                        $$('#list_id').val(obj.id);
+
+                        $$('#createNftForm').css('display', 'none');
+                        $$('#createNftFormstep2').css('display', 'block');
+ 
+                          
+                      } 
+                      else
+                      {
+                          $f7.dialog.alert(obj.message);
+                      }    
+                  
+               
+                },
+
+              });
+
+
+
+}
+
+
+const openFilePicker = () => {
+
+
+ 
+
+    let srcType = Camera.PictureSourceType.SAVEDPHOTOALBUM;
+    let options = {
+        // Some common settings are 20, 50, and 100
+        quality: 50,
+        destinationType: Camera.DestinationType.FILE_URI,
+        // In this app, dynamically set the picture source, Camera or photo gallery
+        sourceType: srcType,
+        encodingType: Camera.EncodingType.JPEG,
+        mediaType: Camera.MediaType.PICTURE,
+        allowEdit: true,
+        correctOrientation: true  //Corrects Android orientation quirks
+    };
+    
+
+    navigator.camera.getPicture(function cameraSuccess(imageUri) {
+
+
+
+ var elem = document.getElementById('imageloc');
+ elem.src = imageUri;
+
+ app.preloader.show();
+
+  
+ let list_id = $$('#list_id').val();
+  var list_details = { list_id:list_id };
+
+
+  
+ 
+  // Do something
+   var fileURL = imageUri.split('?')[0];
+   var uri = encodeURI(api_url+'/post/upload/');
+   var options = new FileUploadOptions();
+   options.fileKey = "files";
+   options.fileName = fileURL.substr(fileURL.lastIndexOf('/')+1);
+   options.chunkedMode = false;
+   options.mimeType = "image/jpeg";
+   options.params = list_details;
+    
+
+   
+   //var headers = {'headerParam':'headerValue'};
+   //options.headers = headers;
+   var ft = new FileTransfer();
+   ft.upload(fileURL, uri, onSuccess, onError, options);
+
+    
+   console.log(options);
+
+   function onSuccess(r) {
+      console.log("Code = " + r.responseCode);
+      console.log("Response = " + r.response);
+      //console.log("Sent = " + r.bytesSent);
+       console.log(JSON.stringify(r));
+
+
+var toastCenter = app.toast.create({
+  text: 'Image Uploaded Successfully',
+  position: 'center',
+  closeTimeout: 2000,
+});
+toastCenter.open();
+app.preloader.hide();
+
+ 
+
+//app.view.main.router.navigate('/');
+
+   }
+
+   function onError(error) {
+      alert("An error has occurred: Code = " + error.code);
+      console.log("upload error source " + error.source);
+      console.log("upload error target " + error.target);
+       console.log(JSON.stringify(error));
+   }
+  
+
+}, function cameraError(error) {
+        console.debug("Unable to obtain picture: " + error, "app");
+
+    }, options);
+   
+
+
+}
+
+
+ 
+
+ 
+
+$on('pageInit', (e, page) => {
+
+  get_categories();
+  get_locations();
+
+
+ 
+
+ });
+
+
+
+
+
+
+  return $render;
+}
+</script>

@@ -1,0 +1,49 @@
+{
+  "name": "xrp-nft",
+  "private": true,
+  "version": "1.0.0",
+  "description": "XRP NFT",
+  "repository": "",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "cross-env NODE_ENV=development vite",
+    "build": "cross-env NODE_ENV=production vite build",
+    "build-cordova": "cross-env TARGET=cordova cross-env NODE_ENV=production vite build && node ./build/build-cordova.js && cd cordova && cordova build",
+    "build-cordova-ios": "cross-env TARGET=cordova cross-env NODE_ENV=production vite build && node ./build/build-cordova.js && cd cordova && cordova build ios",
+    "cordova-ios": "cross-env TARGET=cordova cross-env NODE_ENV=production vite build && node ./build/build-cordova.js && cd cordova && cordova run ios",
+    "build-cordova-android": "cross-env TARGET=cordova cross-env NODE_ENV=production vite build && node ./build/build-cordova.js && cd cordova && cordova build android",
+    "cordova-android": "cross-env TARGET=cordova cross-env NODE_ENV=production vite build && node ./build/build-cordova.js && cd cordova && cordova run android",
+    "postinstall": "cpy ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy ./node_modules/material-icons/iconfont/*.* ./src/fonts/"
+  },
+  "browserslist": [
+    "Android >= 7",
+    "IOS >= 11",
+    "Safari >= 11",
+    "Chrome >= 49",
+    "Firefox >= 31",
+    "Samsung >= 5"
+  ],
+  "dependencies": {
+    "dom7": "^3.0.0",
+    "framework7": "^6.3.16",
+    "framework7-icons": "^5.0.5",
+    "material-icons": "^1.10.8",
+    "nft.storage": "^7.0.0",
+    "node-fetch": "^2.6.7",
+    "skeleton-elements": "^3.5.0",
+    "swiper": "^6.8.4",
+    "web3.storage": "^4.4.0",
+    "xrpl": "^2.6.0",
+    "xumm-sdk": "^1.7.0"
+  },
+  "devDependencies": {
+    "cpy-cli": "^4.1.0",
+    "cross-env": "^7.0.3",
+    "postcss-preset-env": "^6.7.1",
+    "rollup": "^2.70.1",
+    "rollup-plugin-framework7": "^1.2.1",
+    "vite": "^2.8.6",
+    "vite-plugin-html": "^3.2.0"
+  }
+}
