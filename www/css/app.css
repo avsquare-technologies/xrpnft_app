@@ -1,0 +1,206 @@
+/* iOS Cordova Tweak */
+.device-cordova.device-ios {
+  height: 100vh;
+}
+
+/* Custom color theme properties */
+:root {
+    --f7-theme-color: #19ff83;
+  --f7-theme-color-rgb: 25, 255, 131;
+  --f7-theme-color-shade: #00ef6e;
+  --f7-theme-color-tint: #42ff99;
+      --f7-page-bg-color: #1d1d1d;
+      --f7-block-title-medium-text-color: #fff;
+    --f7-block-title-large-text-color: #fff;
+    --f7-block-strong-bg-color: #1d1d1d;
+        --f7-block-strong-text-color: #fff;
+        --f7-list-bg-color: #1d1d1d;
+        --f7-list-item-title-text-color: #fff;
+        --f7-list-border-color: #fff;
+        --f7-list-chevron-icon-color: #fff;
+            --f7-block-title-text-color: rgba(255, 255, 255, 0.7);
+            --f7-button-text-color: #000;
+            --f7-button-fill-text-color: #000;
+            --f7-navbar-bg-color: #000;
+            --f7-list-item-border-color: #fff;
+                --f7-input-text-color: #fff;
+                    --f7-label-text-color: #19ff83c7;
+                        --f7-navbar-large-title-text-color: #fff;
+                  --f7-navbar-link-color: #19ff83;      
+                  --f7-bars-link-color: #fff;
+                      --f7-login-screen-content-bg-color: #1d1d1d;
+    --f7-login-screen-bg-color: #1d1d1d;
+        --f7-input-placeholder-color: rgb(246 246 246 / 35%);
+        --f7-bars-bg-color: #0e0e0e;
+
+    --f7-list-item-text-text-color: rgba(255, 255, 255, 0.7);
+    --f7-list-item-after-text-color: rgba(255, 255, 255, 0.7);
+    --f7-list-item-footer-text-color: rgba(255, 255, 255, 0.7);
+    --f7-list-item-divider-text-color: rgba(255, 255, 255, 0.7);
+    --f7-list-group-title-text-color: rgba(255, 255, 255, 0.7);
+
+        --f7-card-bg-color: #0e0e0e;
+
+        --animate-delay: 0.5s;
+
+    --f7-dialog-bg-color: #000;
+    --f7-dialog-text-color: rgba(255,255, 255, 1);
+    --f7-dialog-title-text-color: #fff;
+
+    --f7-dialog-bg-color: rgba(0, 0, 0, 1);
+    --f7-dialog-bg-color-rgb: 0, 0, 0;
+
+    --f7-navbar-bg-color: #1d1d1d;
+
+
+}
+
+/* Your app custom styles here */
+
+body, h1, h2, h3, h4, h5, h6 { color: #fff; font-family: 'Coda', cursive; }
+body { background: #1d1d1d; }
+.list a { color: #19ff83; }
+a.button { color: #000; }
+
+img { max-width:100% }
+.txtCaps { text-transform:capitalize; }
+
+.dialog-input.input-with-value { color:#000; padding-left:10px }
+
+.textcenter { text-align:center; }
+
+#createNftFormstep2 { display:block; }
+
+#img-preview {
+  display: none; 
+  width: 155px;   
+  border: 2px dashed #333;  
+  margin-bottom: 20px;
+}
+#img-preview img {  
+  width: 100%;
+  height: auto; 
+  display: block;   
+}
+
+.colorGreen { color: #19ff83; }
+.colorRed { color:#f38e8e; }
+.kycCheckmark i { font-size:16px; }
+.fs12 { font-size:12px; }
+
+.loginPage h1 { font-size:60px;  }
+
+.TokenImage {  font-size: 25px;
+    
+    background: #42fc83;
+    padding: 10px 30px;
+    color: #000;     font-weight: bold; }
+
+.createNftForm ul:before, .createNftForm ul:after { display: none;  }
+.createNftForm li:before, .createNftForm li:after, .createNftForm .item-inner:before, .createNftForm .item-inner:after { display: none; }
+.createNftForm small { font-size: 10px;line-height: 15px; display: block; margin: 10px 0; }
+.createNftForm input[type="text"], .createNftForm  textarea {     background: #393939;
+    margin-top: 10px;
+    padding: 12px;
+    height: 59px;
+    border-radius: 4px; color: #fff; }
+.createNftForm textarea { height: 150px;  }
+.createNftForm .item-input-wrap:after, .createNftForm .item-input-wrap:before { display: none !important; }
+.createNftForm .smart-select {  background: #393939; margin-left: 15px; margin-right: 15px; margin-bottom: 15px;
+    border-radius: 4px; padding: 12px; color: #fff; }
+.smart-select .item-after { color: #fff; }   
+.customTab { display: block; background: #191919; padding: 20px; text-align: center; border:1px solid #434242; margin-bottom: 30px; border-radius: 10px; font-size: 20px; text-transform: uppercase; font-weight: bold; color: #fff; letter-spacing: 1px; } 
+
+h1 span { display: block; font-size: 50px; color: #19ff83; }
+
+.home.page { background: #1d1d1d url(./assets/hero.svg); background-size: 100%; }
+
+.tokenList { color: #fff; }
+.tokenList .item-after { color: #fff; padding-left: 0px;  font-size: 14px;  }
+.tokenList .item-media img { background: #fff; }
+
+.color-red { background:#ac2121; }
+
+.tokenList li .card { padding-top:20px;  }
+.code_block { word-break: break-word;
+    display: inline-block;
+    background-color: #515151;
+    padding: 10px;
+    font-size: 12px;
+    max-width: 100%;
+    text-align: justify;
+    margin: 5px 0 10px;
+    pointer-events: none;
+    position: relative;
+    min-width: 191px; }
+
+.card-content-padding > p { margin-bottom: 3px; margin-top: 5px; }
+.CardMedia {  
+  
+padding: 15px; padding-bottom: 0px;  }
+
+.CardMedia { display: flex; }
+.CardMedia img { background: #fff;  }
+.tokenList span { color: #ccc; }
+.tokenList .card {  border: 1px solid #6a6a6a; }
+.cardCnt { padding-left: 15px; }
+.cardCnt p { margin-top: 0px; margin-bottom: 3px; }
+.cardImage { background: #fff;
+padding: 5px; vertical-align: middle; align-self: center; border-radius: 5px; }
+.burnLink { color: #f38e8e; }
+
+.tokenList .card-content { display: none; }
+.tokenList .card-content.active { display: block; }
+.tokenList .card-footer { background: #373737; margin-top: 15px; }
+
+.buttonBlock small { font-size:15px; color:#999; text-transform:capitalize; }
+
+.address { text-align: left; }
+
+.nftDetailContent img, .tokenList img { border-radius:10px; } 
+.nfts_data ul { background:none; } 
+.nfts_data ul:before{ display:none; }
+.nfts_data .item-title { color:#19ff83; text-transform:uppercase; }
+
+.nfts_data .item-text { word-break:break-all; }
+
+.mbTop50 { margin-top:15px; margin-bottom:50px; }
+
+.loginPage li { margin-bottom:20px; }
+.loginPage input[type="text"], .loginPage input[type="password"], .loginPage input[type="email"] { height:80px !important; }
+
+.infotext { word-break:break-all; }
+
+
+.nftDetailContent .tab-link { color:#fff; }
+.nftDetailContent .tab-link-active { color:#19ff83; }
+
+.tokenList .item-title { color:#19ff83; font-weight:bold;  }
+.tokenList .item-subtitle { color:#ccc; }
+
+[type="file"] {
+/* Style the color of the message that says 'No file chosen' */
+  color: #878787;
+  width: 100%;
+}
+[type="file"]::-webkit-file-upload-button {
+  background: #00ef6e;
+  border: 2px solid #00ef6e;
+  border-radius: 4px;
+  color: #000;
+  cursor: pointer;
+  font-size: 12px;
+  outline: none;
+  padding: 10px 25px;
+  text-transform: uppercase;
+  transition: all 1s ease;
+  width: 100%;
+}
+
+[type="file"]::-webkit-file-upload-button:hover {
+  background: #fff;
+  border: 2px solid #535353;
+  color: #000;
+}
+.preview { text-align:center; }
+.preview img { max-width:200px; }

@@ -26,16 +26,17 @@
 <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
  
- 
+ <script src="https://unpkg.com/xrpl@2.0.0/build/xrpl-latest-min.js"></script>
+
   
   <!-- built styles file will be auto injected -->
-  <script type="module" crossorigin src="assets/index.3a0c5ce3.js"></script>
-  <link rel="modulepreload" href="assets/vendor.643e067d.js">
-  <link rel="stylesheet" href="assets/index.c97c16e6.css">
 </head>
 <body>
   <div id="app"></div>
-  
+  <% if (TARGET === 'cordova') { %>
+  <script src="cordova.js"></script>
+  <% } %>
+  <script type="module" src="./js/app.js"></script>
   
 </body>
 </html>

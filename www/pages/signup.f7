@@ -1,0 +1,236 @@
+<template>
+  <div class="page loginPage" data-name="booknow">
+    <!-- Top Navbar -->
+    <div class="navbar no-hairline navbar-transparent">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          
+        </div>
+        <div class="right">
+          <a href="/"  class="link" ><i class="icons f7-icons">multiply</i></a>
+           
+         
+        </div>
+      </div>
+    </div>
+    <!-- Toolbar-->
+
+
+  <div class="page-content login-screen-content signup">
+     
+
+<div class="block heading-block animate__animated animate__fadeIn">
+            <div class="row">
+                <div class="col-60">
+                  <h1>Sign Up</h1></div>
+                 
+            </div>     
+</div>
+     
+  
+<form class="list" id="signup-form">
+  <ul>
+    <li>
+      <div class="item-content item-input-outline">
+        <div class="item-inner">
+           <div class="item-input-wrap">
+            <input type="text" name="first_name" placeholder="First name" />
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="item-content item-input-outline">
+        <div class="item-inner">
+          <div class="item-input-wrap">
+            <input type="text" name="last_name" placeholder="Last name" />
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="item-content item-input-outline">
+        <div class="item-inner">
+          <div class="item-input-wrap">
+            <input type="email" name="email" placeholder="E-mail" />
+          </div>
+        </div>
+      </div>
+    </li>
+     <li>
+      <div class="item-content item-input-outline">
+        <div class="item-inner">
+          <div class="item-input-wrap">
+            <input type="text" name="username" placeholder="Username" />
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="item-content item-input-outline">
+        <div class="item-inner">
+           <div class="item-input-wrap">
+            <input type="password" id="password" name="password" placeholder="Password" />
+          </div>
+        </div>
+      </div>
+    </li>
+ 
+   </ul>
+
+   <div class="block showpassouter">
+                
+              <label class="toggle">
+                  <input type="checkbox" name="showpass" id="showpass" @change="${showPassword}" />
+                  <span class="toggle-icon"></span> 
+                </label> Show Password
+              </div>
+
+
+<div class="block loginbtnOuter">
+            <a class=" button button-large button-fill btn-black" @click="${createaccount}" href="#">Create an Account</a>
+</div>
+
+<div class="list">
+   <div class="block-footer">
+                
+                <p><a class="link home" href="/login/">Login</a> | <a class="link home" href="/">Back to Home</a></p>
+              </div>
+            </div>
+
+<input type="hidden" name="token" class="token" id="token" />
+
+
+</form>
+ 
+  
+     
+  </div>
+</div>
+</template>
+<script>
+import $$ from 'dom7';
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+var cart_barge = 0;
+let user_login_status = false;
+let user=[];
+ 
+ let user_billing=[];
+ let user_shipping=[];
+ let D_tocken;
+
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+
+
+const createaccount = () => {
+
+
+
+$f7.preloader.show();
+var formData = $f7.form.convertToData('#signup-form');  
+$f7.request({
+                url: api_url+'customer-registration/',
+                method : "POST",
+                timeout: 0,
+                data:formData,
+                 
+                
+                success: function(data) {
+
+                    $f7.preloader.hide();
+               
+                    var obj = JSON.parse(data);   
+
+                     
+                     console.log(obj);
+                   
+
+                   if(obj.status)
+                    {
+
+                       //getUserInfo(obj.id);
+                       $f7.dialog.alert('Account has been Created'); 
+                        
+                           var storage = window.localStorage;
+                           (async () => await localStorage.setItem('store_Login', true))();
+                           (async () => await localStorage.setItem('new_registration', true))();
+                           (async () => await localStorage.setItem('user_profile_data', data))();
+
+
+                       $f7.views.main.router.navigate('/login/');
+
+        
+
+
+                       
+                    } 
+                    else
+                    {
+                        $f7.dialog.alert(obj.message);
+                    }    
+                  
+               
+                },
+
+              });
+
+
+
+}
+
+
+
+
+const showPassword = (e) => {
+
+  if(e.target.checked ==true)
+  {
+      $$('.signup #password').attr('type','text');
+  }
+  else
+  { 
+     $$('.signup #password').attr('type','password')
+  } 
+
+
+
+}
+
+
+ 
+ 
+
+
+
+const checkLogin = () => {
+
+      var storage = window.localStorage;
+      var login_status = storage.getItem('shop_Login');
+ 
+      if(login_status == 'true')
+      {
+         user_login_status = true;
+         $update();
+      }
+
+}
+
+
+
+
+ $on('pageInit', (e, page) => {
+
+ checkLogin();
+
+ 
+ $f7.views.main.router.clearPreviousHistory()
+
+ });
+ 
+
+return $render;
+}
+</script>

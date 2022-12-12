@@ -1,0 +1,757 @@
+<template>
+  <div class="page" data-name="create-nft">
+    <!-- Top Navbar -->
+    <div class="navbar navbar-transparent sliding">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="left">
+           <a class="link back" ><i class="icons f7-icons">chevron_up</i></a>
+        </div>
+        <div class="title sliding">NFT using XRPL</div>
+        <div class="right">
+           <a href="/signup/"  class="link" ><i class="icons f7-icons">square_arrow_right</i></a>
+        </div>
+         
+      </div>
+    </div>
+ 
+    <!-- Scrollable page content-->
+    <div class="page-content">
+       
+
+<div class="MintFormOuter">
+
+<div class="block">
+<h2>Mint NFT</h2>
+</div>
+ 
+    
+<form class="createNftForm list"  id="createNftForm">
+        <ul>
+
+
+
+        <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Select Art (Audio, Video, Art)</div>
+                <div class="item-input-wrap">
+                   <input type="file" name="nftfile" id="nftfile" />
+   
+                </div>
+              </div>
+            </div>
+          </li>  
+          <li>
+  <div class="preview">
+   <img id="blah" />
+ </div>
+
+
+</li>    
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Name</div>
+                <div class="item-input-wrap">
+                   <input type="text" placeholder="Enter item name" name="itemName" class="itemName" required validate />
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">External Link</div>
+                <div class="item-input-wrap">
+                   <input type="text" placeholder="Enter External Link" name="itemExternal" class="itemExternal" required />
+                   <small>xNFT will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.</small>
+                </div>
+              </div>
+            </div>
+          </li>
+
+           <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Price</div>
+                <div class="item-input-wrap">
+                   <input type="text" placeholder="Enter item price" name="itemPrice" class="itemPrice" required validate pattern="[0-9]*" data-error-message="Only numbers please!" />
+                    
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Royalty Fee</div>
+                <div class="item-input-wrap">
+                   <input type="text" placeholder="Enter Royalty Fee" name="itemRoyalFee" class="itemRoyalFee" validate pattern="[0-9]*" data-error-message="Only numbers please!"  />
+                   <small>Creator will get precentage commission on each sale.</small>
+                </div>
+              </div>
+            </div>
+          </li>
+
+
+        <li>
+          <a class="item-link smart-select smart-select-init" data-open-in="sheet">
+            <select name="ItemType">
+              <option value=""></option>
+              <option value="Audio">Audio</option>
+              <option value="Video">Video</option>
+              <option value="Art">Art</option>
+            </select>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">NFT Type</div>
+              </div>
+            </div>
+          </a>
+        </li>
+
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Item Description</div>
+                <div class="item-input-wrap">
+                   <textarea class="desc" name="itemDesc" id="itemDesc" required></textarea>
+                   <small>The description will be included on the item\'s detail page underneath its image. Markdown syntax is supported.</small>
+                </div>
+              </div>
+            </div>
+          </li>
+
+ 
+
+<!--         <li>
+          <a class="item-link smart-select smart-select-init ad_cat">
+          </a>
+        </li>
+
+        <li>
+          <a class="item-link smart-select smart-select-init ad_loc">
+            
+          </a>
+        </li> -->
+
+      
+
+        </ul>
+
+ 
+      <div class="block-title">NFTokenMint Flags</div>
+      
+      <div class="list simple-list">
+      <ul>
+        <li>
+          <span>Burnable</span>
+          <label class="toggle toggle-init color-green">
+            <input type="checkbox" name="burnable" value="1" />
+            <span class="toggle-icon"></span>
+          </label>
+        </li>
+
+        <li>
+          <span>Only XRP</span>
+          <label class="toggle toggle-init color-green">
+            <input type="checkbox" name="onlyxrp" value="1" />
+            <span class="toggle-icon"></span>
+          </label>
+        </li>
+
+        <li>
+          <span>Transferable</span>
+          <label class="toggle toggle-init color-green">
+            <input type="checkbox" name="transferable" value="1" />
+            <span class="toggle-icon"></span>
+          </label>
+        </li>
+
+
+      </ul>
+    </div>
+
+<ul>
+ <li>
+           
+          <div class="block block-strong">
+             <input type="hidden" id="nft_cid"  name="nft_cid" />
+             <input type="hidden" id="user_id"  name="user_id" />
+             <input type="hidden" id="list_id"  name="list_id" />
+             <input type="hidden" id="meta_path"  name="meta_path" />
+             <input type="hidden" id="xumm_address"  name="xumm_address" />
+             <input type="hidden" id="xumm_token"  name="xumm_token" />
+             <input type="hidden" id="nft_token_id"  name="nft_token_id" />
+          <a href="#" @click="${uploadtoWeb3Storage}" class="col button button-fill button-large button-raised">Mint NFT</a>
+           </div>
+        </li>
+      </ul>
+
+</form>
+
+ </div>
+
+<div class="saleFormOuter">
+
+<div class="block">
+<h2>Enable Sale</h2>
+</div>
+
+<div class="block">
+<div id="nftMintDetails" class="list media-list nfts_data"></div>
+</div>
+
+<div class="list">
+<ul>
+ <li>
+           
+          <div class="block block-strong">
+           
+          <a href="#" @click="${create_offer}" class="col button button-fill button-large button-raised">Create Offer</a>
+           </div>
+        </li>
+      </ul>
+</div>
+
+</div>
+
+ 
+
+    
+    </div>
+  </div>
+</template>
+<script>
+import $$ from 'dom7';
+
+import { Web3Storage } from 'web3.storage';
+
+/*import { NFTStorage } from 'nft.storage'*/
+
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+
+
+let xummStatus;
+
+// Construct with token and endpoint
+const web3client = new Web3Storage({ token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGEyNzdGMWNGZGE4QUU4QTQ0OTBjRjE2YmFjNGI1REFlZjczM0UwMjAiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzA4NjIwOTYxNjQsIm5hbWUiOiJhcHAifQ.fdY5h-rlzVtWKNecI1-IrSKjBxehIjZGx_u53KXxhPA' })
+
+
+/*const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGUzRjg2RjkzODg4QWZGRjBCOTlDOUUxNmJhMzA2Qjc5NDQ1MGEyMzUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0NjMzMjQ5MzkwNywibmFtZSI6IlN3b29wbHkgV2ViIEFwcCJ9.8AVVVdNHtJ351lYOqrDSuqHxS5iGct4Tc0nX_urfJzI';
+const nft_storageclient = new NFTStorage({ token: NFT_STORAGE_TOKEN });*/
+
+//Fetch Categories
+const get_categories = () => {
+
+  $f7.preloader.show();
+              
+              $f7.request({
+                url: api_url+'get_categories/',
+                method : "GET",
+                timeout: 0,
+                success: function(data) {
+
+                    var all_cats = JSON.parse(data);
+                    $$('.ad_cat').html(all_cats);
+                    $f7.preloader.hide();
+                },
+
+              });
+}
+
+//Fetch Locations
+const get_locations = () => {
+
+  $f7.preloader.show();
+              
+              $f7.request({
+                url: api_url+'get_locations/',
+                method : "GET",
+                timeout: 0,
+                success: function(data) {  
+
+                    var all_loc = JSON.parse(data);
+                    $$('.ad_loc').html(all_loc);
+                    $f7.preloader.hide();
+                },
+
+              });
+}
+
+
+//Create Ad
+const create_ad = () => {
+
+ 
+$f7.dialog.preloader('Please Wait...');
+var formData = $f7.form.convertToData('#createNftForm');  
+
+console.log(formData);
+ 
+ 
+
+$f7.request({
+                url: api_url+'create-classified/',
+                method : "POST",
+                timeout: 0,
+                data:formData,
+                 
+                
+                success: function(data) {
+
+                  console.log(data);
+
+                    $f7.dialog.close();
+               
+                    var obj = JSON.parse(data);   
+
+              $f7.dialog.close();       
+              console.log(obj);
+
+              $$('#list_id').val(obj.list_id);
+              $$('#meta_path').val(obj.meta_path);
+
+let nft_details = '<ul>' ;
+for(var i in obj){
+
+
+
+    if( (i != 'xumm_token') || (i != 'nft_token_id') || (i != 'xumm_address') || (i != 'user_id') || (i != 'list_id') || (i != 'meta_path') )
+    {
+                  
+   nft_details += '<li>\
+              <div class="item-inner">\
+                <div class="item-title-row">\
+                  <div class="item-title">'+i+'</div>\
+                </div>\
+                <div class="item-text">'+obj[i]+'</div>\
+              </div>\
+          </li>'; 
+
+        }
+
+
+  }
+
+   nft_details +='</ul>';
+    
+    $$('.MintFormOuter').css('display','none');
+    $$('#nftMintDetails').html(nft_details); 
+    $$('.saleFormOuter').css('display','block');  
+
+    mint_nft(); //Mint NFT               
+               
+    },
+
+   });
+ 
+ 
+
+}
+
+
+
+const uploadtoWeb3Storage = async() => {
+
+
+$f7.dialog.preloader('Preparing File upload...');
+const fileInput = document.querySelector('input[type="file"]');
+
+if(fileInput.files.length == 0)
+{
+      $f7.dialog.close();
+      $f7.dialog.alert('Choose Art file');
+      return false;
+}
+
+
+
+//console.log(fileInput.files);
+const cid = await web3client.put(fileInput.files)
+//console.log(`IPFS CID: ${cid}`)
+//console.log(`Gateway URL: https://${cid}.ipfs.w3s.link/${fileInput.files[0].name}`)
+
+  if(cid)
+  {
+      $$('#nft_cid').val(cid);
+      create_ad(cid);
+  }
+  else
+  {
+       $f7.dialog.close();
+       $f7.dialog.alert('Some Went Wrong. Please try again.');
+
+  }
+
+
+$f7.dialog.close();
+
+
+
+}
+
+ 
+
+
+/*const uploadtoWeb3Storage = async() => {
+
+$f7.dialog.preloader('Preparing File upload...');
+
+const fileInput = document.querySelector('input[type="file"]');
+
+
+
+
+console.log(fileInput.files.length);
+
+if(fileInput.files.length == 0)
+{
+      $f7.dialog.close();
+      $f7.dialog.alert('Choose Art file');
+      return false;
+}
+
+
+// Pack files into a CAR and send to web3.storage
+const rootCid = await web3client.put(fileInput.files) // Promise<CIDString>
+// Get info on the Filecoin deals that the CID is stored in
+const info = await web3client.status(rootCid) // Promise<Status | undefined>
+
+// Fetch and verify files from web3.storage
+const res = await web3client.get(rootCid) // Promise<Web3Response | null>
+const files = await res.files() // Promise<Web3File[]>
+for (const file of files) {
+  console.log(`${file.cid} ${file.name} ${file.size}`)
+
+  if(file.cid)
+  {
+      $$('#nft_cid').val(file.cid);
+      create_ad(file.cid);
+  }
+  else
+  {
+       $f7.dialog.close();
+       $f7.dialog.alert('Some Went Wrong. Please try again.');
+
+  }
+
+
+$f7.dialog.close();
+}
+
+}
+*/
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#blah').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+
+$$(document).on('change','#nftfile', function (e) {
+    readURL(this);
+});
+
+ 
+const mint_nft = () => {
+
+
+$f7.dialog.preloader('Chech XUMM for Approve.');
+var formData = $f7.form.convertToData('#createNftForm');  
+
+console.log(formData);
+ 
+ 
+ 
+
+$f7.request({
+                url: api_url+'enable-sale/',
+                method : "POST",
+                timeout: 0,
+                data:formData,
+                 
+                
+                success: function(data) {
+
+                  console.log(data);
+
+                    
+               
+                    var res = JSON.parse(data);   
+                    console.log(res);
+
+
+                       console.log(res.next.always);
+
+                  xummStatus = setInterval(getXummConnection_status, 5000);
+
+                  let xumm_url = 'xumm://xumm.app/sign/'+res.uuid+'/deeplink'; 
+ 
+
+    window.plugins.launcher.launch({uri:xumm_url}, successCallback, errorCallback);
+
+    // Default handlers
+    var successCallback = function(data) {
+        alert("Success!");
+        // if calling canLaunch() with getAppList:true, data will contain an array named "appList" with the package names of applications that can handle the uri specified.
+    };
+    var errorCallback = function(errMsg) {
+        alert("Error! " + errMsg);
+    }
+ 
+
+                 
+               
+                },
+
+   });
+   
+     
+   
+
+
+}
+
+
+const hex_to_ascii = (str1) => {
+  
+  var hex  = str1.toString();
+  var str = '';
+  for (var n = 0; n < hex.length; n += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+  }
+  return str;
+
+}
+
+const getXummConnection_status = () => {
+
+console.log('statyus checking'); 
+let list_id = $$('#list_id').val();
+let xumm_address = $$('#xumm_address').val(); 
+  
+
+$f7.request({
+                      url:api_url+'mint_status/?list_id='+list_id ,
+                      method : "POST",
+                      timeout: 0,
+                      crossDomain: true,
+                      
+                    
+                      success: function(data) {
+
+                       let res = JSON.parse(data);
+                       console.log(res);
+
+                        if(res.status == true)
+                        {
+
+                           $f7.dialog.close();
+                           clearInterval(xummStatus);
+                           let toastCenter = $f7.toast.create({
+                                  text: 'NFT Minted Successfully',
+                                  position: 'bottom',
+                                  closeTimeout: 3000,
+                                  });
+                   
+
+                                  toastCenter.open(); 
+                   
+
+
+       
+
+        get_NFTokenID( res.nft_uri,  xumm_address);
+
+
+
+                        }
+      
+                    }
+                        
+                     
+                      
+
+      });  
+
+
+
+} 
+
+const get_NFTokenID = async( nft_uri, xumm_address ) => {
+
+  console.log('nft_uri',nft_uri);
+  console.log('xumm_address',xumm_address);
+
+ const client = new xrpl.Client("wss://s.altnet.rippletest.net")
+
+ await client.connect()
+
+        const response = await client.request({
+            "command": "account_nfts",
+            "account": xumm_address,
+            "ledger_index": "validated"
+        })
+
+
+        var all_nfts = response.result.account_nfts;
+        var nft_count = all_nfts.length;
+
+        console.log(all_nfts);
+
+        let token_id = all_nfts.filter(obj => obj.URI.toLowerCase().indexOf(nft_uri.toLowerCase()) >= 0);
+
+        console.log(token_id);
+        console.log(token_id[0].NFTokenID);
+
+        $$('#nft_token_id').val(token_id[0].NFTokenID);
+ 
+
+
+}
+
+
+const create_offer = async() => {
+
+
+  $f7.dialog.preloader('Please wait....');
+  var formData = $f7.form.convertToData('#createNftForm');  
+    
+    $f7.request({
+                      url:api_url+'create_offer/' ,
+                      method : "POST",
+                      timeout: 0,
+                     
+                      data:formData,
+                    
+                      success: function(data) {
+
+                       let res = JSON.parse(data);
+                       console.log(res);
+                 $f7.dialog.close();
+                 $f7.dialog.preloader('Chech XUMM for Approve.');
+                 xummStatus = setInterval(getOffer_status, 5000);
+
+                        
+      
+                    }
+                        
+                     
+                      
+
+      });  
+
+     
+
+
+
+
+}
+
+
+const getOffer_status = () => {
+
+
+console.log('statyus checking'); 
+let list_id = $$('#list_id').val();
+let xumm_address = $$('#xumm_address').val(); 
+  
+
+$f7.request({
+                      url:api_url+'offer_status/?list_id='+list_id ,
+                      method : "POST",
+                      timeout: 0,
+                      crossDomain: true,
+                      
+                    
+                      success: function(data) {
+
+                       let res = JSON.parse(data);
+                       console.log(res);
+
+                        if(res.status == true)
+                        {
+
+                           $f7.dialog.close();
+                           clearInterval(xummStatus);
+                           let toastCenter = $f7.toast.create({
+                                  text: 'Offer Created Successfully',
+                                  position: 'bottom',
+                                  closeTimeout: 3000,
+                                  });
+                           toastCenter.open(); 
+
+
+                           $f7.views.main.router.navigate('/gettokens/');
+                
+
+
+                        }
+      
+                    }
+                        
+                     
+                      
+
+      });  
+
+
+
+
+}
+
+
+
+
+const get_logged_in_user_data = () => {
+    
+    var storage = window.localStorage;
+    var UserDetails = storage.getItem('user_profile_data');
+    var xumm_address = storage.getItem('xumm_address');
+    var xumm_token = storage.getItem('xumm_token');
+
+    if(UserDetails)
+    {
+     
+       let u_d = JSON.parse(UserDetails);
+       $$('#user_id').val(u_d.ID);
+       $$('#xumm_address').val(xumm_address);
+       $$('#xumm_token').val(xumm_token);
+    }
+     
+}
+
+
+
+
+$on('pageInit', (e, page) => {
+
+  //get_categories();
+  //get_locations();
+
+get_logged_in_user_data();
+ 
+
+ });
+
+
+
+
+
+
+  return $render;
+}
+</script>

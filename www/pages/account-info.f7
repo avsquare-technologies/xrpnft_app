@@ -1,0 +1,378 @@
+<template>
+  <div class="page home" data-name="account-info">
+    <!-- Top Navbar -->
+    <div class="navbar navbar-transparent sliding">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner">
+        <div class="left">
+           
+        </div>
+        <div class="title sliding">NFT using XRPL</div>
+        <div class="right">
+          <a href="/"  class="link back" ><i class="icons f7-icons">chevron_up</i></a>
+          ${xumm_status ? $h`
+         <a class="link" href="/accountinfo/"><i class="f7-icons">person</i></a>
+        
+         <a class="link" href="#" @click="${logout}" ><i class="f7-icons">square_arrow_left</i></a>
+          
+
+         ` : $h`
+
+               ${user_login_status ? $h`
+
+               <a class="link" href="#" @click="${logout}" ><i class="f7-icons">square_arrow_left</i></a>
+
+               `:$h`
+               <a href="/login/"  class="link" ><i class="f7-icons">square_arrow_right</i></a>
+               `}
+         
+         `}
+        </div>
+         
+      </div>
+    </div>
+    
+
+
+
+
+    <!-- Scrollable page content-->
+    <div class="page-content ptr-content hide-navbar-on-scroll" @ptr:refresh=${pageRefresh}>
+
+      <div class="ptr-preloader">
+        <div class="preloader"></div>
+        <div class="ptr-arrow"></div>
+      </div>
+
+<div class="block">
+<h1>Account <span>Information</span></h1>
+</div>
+
+<div class="block">
+
+
+
+<div class="infotext">
+   
+
+  ${info && $h` 
+  <div>Address: <b class="green">${ info.result.account_data.Account }</b></div>
+  <div>XRP Balance: <b class="green">${ (info.result.account_data.Balance / 1000000 ) } (-20 XRP Reserved)</b></div>
+  <div>Minted NFTs: <b class="green">${info.result.account_data.MintedTokens}</b></div>
+  <div>Burned NFTs: <b class="orange">${info.result.account_data.BurnedTokens}</b></div>
+  <div>Next sequence: <b>#${info.result.account_data.Sequence}</b></div>
+  <div>Last affecting tx: <a href="AF3980FF92B9D4733C040338219559AE03D868860B2D2FD7FC068FD3A204850D"><u>${info.result.account_data.PreviousTxnID}</u></a></div>
+
+  `}
+   
+  </div>
+
+
+  <div class="OtherTokens">
+</div>
+
+ 
+<a href="#" @click="${disconnect_xumm}" class="customTab color-red animate__animated animate__bounceIn">Disconnect XUMM</a>
+ 
+
+</div>
+   
+
+ 
+
+    
+    </div>
+  </div>
+</template>
+<script>
+import $$ from 'dom7';
+
+
+ 
+
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+
+let user = [];
+let wallet_address;
+let info;
+
+let xummStatus;
+let xumm_status = false;
+let user_login_status = false;
+
+
+const hex_to_ascii = (str1) => {
+  
+  var hex  = str1.toString();
+  var str = '';
+  for (var n = 0; n < hex.length; n += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+  }
+  return str;
+
+} 
+
+const logout = () => {
+
+    (async () => await localStorage.setItem('store_Login', false))();
+    (async () => await localStorage.setItem('user_profile_data', ''))();
+    (async () => await localStorage.setItem('xumm_address', ''))();
+    (async () => await localStorage.setItem('xumm_token', ''))();
+
+    
+    xumm_status = false;
+    user_login_status = false;
+    $update();
+    if(!user_login_status)
+    {
+       $f7.views.main.router.navigate('/');
+    }
+
+} 
+
+const disconnect_xumm = () => {
+
+
+$f7.dialog.confirm('Do you want Disconnect xUMM?', function () {
+         
+        
+
+        $f7.preloader.show();  
+
+        let userdata = get_logged_in_user_data();
+        console.log( userdata.ID);
+
+        $f7.request({
+                        url: api_url+'disconnect_xumm/?user_id='+userdata.ID,
+                        method : "POST",
+                        timeout: 0,
+                        success: function(data) {
+
+                          
+                          var res = JSON.parse(data);
+                          console.log(res);      
+
+                           if(res == 'removed')
+                           {
+
+                               logout();
+                               let toastCenter = $f7.toast.create({
+                                  text: 'XUMM Wallet is Disconnected',
+                                  position: 'bottom',
+                                  closeTimeout: 3000,
+                                  });
+
+                                  toastCenter.open();
+          
+                           }           
+           
+
+
+                          $f7.preloader.hide();  
+
+
+                          $update();
+                                        
+         
+                        },
+                         
+
+                      });
+    
+
+});
+
+
+}
+
+
+const get_logged_in_user_data = () => {
+    
+    var storage = window.localStorage;
+    var UserDetails = storage.getItem('user_profile_data');
+
+    if(UserDetails)
+    {
+     
+    return JSON.parse(UserDetails);
+    }
+    else
+    {
+        $f7.views.main.router.navigate('/login/');
+    }
+}
+
+
+
+ 
+
+const get_wallet_detail = () => {
+
+ 
+  var xumm_address = localStorage.getItem('xumm_address');
+  
+  if(xumm_address) {  xumm_status = true; } 
+  wallet_address = xumm_address;
+  $update();
+
+
+} 
+
+
+const tokenPage = async() => {
+
+ 
+  console.log(wallet_address);
+
+  const client = new xrpl.Client("wss://s.altnet.rippletest.net/")
+  await client.connect()
+
+  info = await client.request({
+    "method": "account_info",
+    "account": wallet_address,
+    
+   })
+
+  await client.disconnect();
+
+
+  console.log(info);
+
+  $update();
+
+}
+
+
+const getOtherTokens = async() => {
+
+ 
+  console.log(wallet_address);
+
+  const client = new xrpl.Client("wss://s.altnet.rippletest.net/")
+  await client.connect()
+
+  info = await client.request({
+    "method": "account_lines",
+    "account": wallet_address,
+    
+   })
+
+  await client.disconnect();
+
+
+  console.log(info);
+
+
+  let all_tokens = info.result.lines; console.log('all_tokens',all_tokens);
+  let tokens = '';
+  let TokenCurrency;
+
+  if( (all_tokens.length > 0) && (all_tokens != undefined) )
+  {
+
+     tokens += '<div class="list media-list tokenList"><h2>Other Tokens</h2><ul>'; 
+
+     for (var i = all_tokens.length - 1; i >= 0; i--) {
+
+
+      if(all_tokens[i].currency.length > 3)
+      {
+
+         TokenCurrency = hex_to_ascii(all_tokens[i].currency);
+
+      }
+      else
+      {
+           TokenCurrency = all_tokens[i].currency;
+      }
+
+        
+
+          
+          tokens += '<li>\
+            <div class="item-inner">\
+                <div class="item-title-row">\
+                  <div class="item-title">'+TokenCurrency+'</div>\
+                  <div class="item-after">Balance: '+all_tokens[i].balance+'</div>\
+                </div>\
+                <div class="item-subtitle">Issuer: '+all_tokens[i].account+'</div>\
+                </div>\
+            </li>';
+
+     }
+
+     tokens += '</ul></div>';
+
+  }
+  else
+  {
+       tokens = '<div class="block">No Other Token Found</div>';
+       
+  }
+
+
+  $$('.OtherTokens').html(tokens);
+
+  $update();
+
+}
+ 
+
+
+ const checkLogin = () => {
+
+      var storage = window.localStorage;
+      var login_status = storage.getItem('store_Login');
+
+ 
+      if(login_status == 'true')
+      {
+
+         user_login_status = true;
+         $update();
+      }
+      else
+      {
+          user_login_status = false;
+          $f7.views.main.router.navigate('/login/');
+      }
+
+}
+
+
+ const pageRefresh = (e, done) => {
+
+     setTimeout(() => { 
+        checkLogin();
+ get_wallet_detail();
+ tokenPage();
+ getOtherTokens();
+       // Update state to rerender
+       $update();
+       // When loading done, we need to reset it
+        done();
+      }, 800);
+
+}
+ 
+
+$on('pageInit', (e, page) => {
+
+ checkLogin();
+ get_wallet_detail();
+ tokenPage();
+ getOtherTokens();
+ 
+
+ });
+
+
+
+
+
+
+  return $render;
+}
+</script>

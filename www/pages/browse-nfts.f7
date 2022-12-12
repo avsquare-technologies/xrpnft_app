@@ -1,0 +1,494 @@
+<template>
+  <div class="page home" data-name="get-tokens">
+    <!-- Top Navbar -->
+    <div class="navbar navbar-transparent sliding">
+      <div class="navbar-bg "></div>
+      <div class="navbar-inner">
+        <div class="left">
+           
+        </div>
+        <div class="title sliding">NFT using XRPL</div>
+        <div class="right">
+          <a href="/"  class="link back" ><i class="icons f7-icons">chevron_up</i></a>
+   ${xumm_status ? $h`
+         <a class="link" href="/accountinfo/"><i class="f7-icons">person</i></a>
+         
+         <a class="link" href="#" @click="${logout}" ><i class="f7-icons">square_arrow_left</i></a>
+          
+
+         ` : $h`
+
+               ${user_login_status ? $h`
+
+               <a class="link" href="#" @click="${logout}" ><i class="f7-icons">square_arrow_left</i></a>
+
+               `:$h`
+               <a href="/login/"  class="link" ><i class="f7-icons">square_arrow_right</i></a>
+               `}
+         
+         `}
+        </div>
+         
+      </div>
+    </div>
+    
+
+
+
+
+    <!-- Scrollable page content-->
+<div class="page-content ptr-content hide-navbar-on-scroll infinite-scroll-content infinite-scroll-bottom" data-infinite-distance="100" @infinite=${loadMore}  @ptr:refresh=${pageRefresh}>
+
+
+        <div class="ptr-preloader">
+        <div class="preloader"></div>
+        <div class="ptr-arrow"></div>
+      </div>     
+
+<div class="block">
+<h1>Browse <span>NFTs</span></h1>
+</div>
+
+ 
+<div class="block">
+<div class="tokenList row" innerHTML="${all_tokens}">
+   
+<div class="skeleton-effect-wave skeleton-text">   
+
+
+  <div class="card demo-card-header-pic">
+         <div class="CardMedia">
+            <div class="cardImage">
+              <div class="skeleton-block" style="width: 100px;height:100px;"></div>
+            </div>
+         
+
+            <div class="cardCnt">
+              <p>----------</p>
+              <p class="date">----------------------</p>
+              <p>TokenTaxon: <span>----------------</span></p>
+            </div> 
+
+        </div>
+
+        <div class="card-content card-content-padding">
+          Token ID<div class="code_block">0000000000000</div>
+        </div>
+        
+        <div class="card-footer"><a href="" class="burnLink">Burn Token</a><a href="#" class="link checkOffer">Check Offer</a></div>
+  </div>
+
+  <div class="card demo-card-header-pic">
+         <div class="CardMedia">
+            <div class="cardImage">
+              <div class="skeleton-block" style="width: 100px;height:100px;"></div>
+            </div>
+         
+
+            <div class="cardCnt">
+              <p>----------</p>
+              <p class="date">----------------------</p>
+              <p>TokenTaxon: <span>----------------</span></p>
+            </div> 
+
+        </div>
+
+        <div class="card-content card-content-padding">
+          Token ID<div class="code_block">0000000000000</div>
+        </div>
+        
+        <div class="card-footer"><a href="" class="burnLink">Burn Token</a><a href="#" class="link checkOffer">Check Offer</a></div>
+  </div>
+
+
+
+
+</div>
+
+ 
+
+
+
+</div>
+
+</div>
+
+
+ 
+   
+
+ 
+      ${hasMoreItems && $h`
+      <div class="preloader infinite-scroll-preloader"></div>
+      `}
+    
+    </div>
+  </div>
+</template>
+<script>
+import $$ from 'dom7';
+
+
+
+
+
+export default function (props, {app, Dom7, $store, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted, $update }) {
+
+const api_url = 'https://dev.avsquaretechnologies.com/xrpnft/wp-json/api/v1/'; 
+
+const xrpl_tokens_url = 'https://api.xrpldata.com/api/v1/xls20-nfts/all/issuers'; 
+const xrpl_nft_issuer_api = 'https://api.xrpldata.com/api/v1/xls20-nfts/issuer/';
+
+let user = [];
+let wallet_address = '';
+let token_item = '';
+let more_token_item = '';
+let all_tokens;
+let total_tokens;
+let nft_uri;
+let issuer_address;
+
+
+let account;
+let domain;
+let username;
+let twitter;
+let kyc;
+
+let tokens;
+
+let currency;
+let arr = [];
+
+let all_nfts = [];
+let issuers_data = [];
+
+let allowInfinite = true;
+let hasMoreItems = true;
+let lastItem = 20;
+
+let xummStatus;
+let xumm_status = false;
+let user_login_status = false;
+
+
+
+const logout = () => {
+
+    (async () => await localStorage.setItem('store_Login', false))();
+    (async () => await localStorage.setItem('user_profile_data', ''))();
+    (async () => await localStorage.setItem('xumm_address', ''))();
+    (async () => await localStorage.setItem('xumm_token', ''))();
+
+    
+    xumm_status = false;
+    user_login_status = false;
+    $update();
+    if(!user_login_status)
+    {
+       $f7.views.main.router.navigate('/');
+    }
+
+} 
+
+
+const hex_to_ascii = (str1) => {
+  
+  var hex  = str1.toString();
+  var str = '';
+  for (var n = 0; n < hex.length; n += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+  }
+  return str;
+
+}  
+
+
+async function get_nft_by_issuer( address ) {
+
+
+ 
+const client = new xrpl.Client("wss://xrplcluster.com/")
+
+ await client.connect()
+
+  const response = await client.request({
+    "command": "account_nfts",
+    "account": address,
+    "ledger_index": "validated"
+  })
+  console.log(response)
+
+ await client.disconnect();
+
+
+
+
+ response.result.account_nfts.forEach( 
+
+    item => {   
+
+      if(item.URI != undefined){  
+         
+
+        let item_url = hex_to_ascii(item.URI);
+
+            let result = item_url.includes("https://");
+            if(result)
+            {
+                   let ipfs_result = item_url.includes("ipfs");
+                   let is_json_file = item_url.includes(".json");
+                   if(ipfs_result || is_json_file )
+                   {
+
+                        //console.log('json', item_url);
+                        fetch(item_url)
+                            .then((response) => response.json())
+                            .then((json) => {
+
+
+                         if(response.result.account != undefined)
+                         {
+
+ 
+                            if( (json.image != undefined) && (json.image != '') ){
+                                let nft_image = '<div class="col-50 animate__animated animate__fadeIn"><a href="/nft-detail/'+response.result.account+'/'+item.NFTokenID+'"><img src="'+json.image+'" /></a></div>';
+                                $$('.tokenList').append(nft_image);
+                            }
+                        }
+ 
+
+
+                            }  );
+
+                   }
+                   else
+                   {
+
+                         if(response.result.account != undefined)
+                         {
+
+
+                            if( (item_url != undefined) && (item_url != '') ){
+                                let nft_image = '<div class="col-50 animate__animated animate__fadeIn"><a href="/nft-detail/'+response.result.account+'/'+item.NFTokenID+'"><img src="'+item_url+'" /></a></div>';
+                                $$('.tokenList').append(nft_image);
+                            }
+
+
+                         }
+
+                   }
+            }
+            else
+            {
+
+               /*  let json_url = 'https://ipfs.filebase.io/ipfs/'+item_url;
+                 //console.log('https://ipfs.filebase.io/ipfs/'+item_url);
+                 fetch(json_url)
+                            .then((response) => response.json())
+                            .then((json) => {
+
+
+     let nft_image = '<div class="card demo-card-header-pic"><div class="CardMedia"><div class="cardImage"><div style="width: 100px;height:100px;"><img src="'+json.image+'" /></div></div><div class="cardCnt"><p>Account: <span>'+response.result.account+'</span></p></div></div><div class="card-content card-content-padding">Token ID<div class="code_block">0000000000000</div></div><div class="card-footer"></div></div>';
+                        $$('.tokenList').append(nft_image);
+ 
+
+
+                            }  );*/
+            }
+
+
+
+     $$('.skeleton-text').hide();
+
+
+
+
+      }
+
+     }
+     
+
+ 
+    );
+
+
+ 
+ 
+}
+
+
+function shuffleArray(arr) {
+  arr.sort(() => Math.random() - 0.5);
+}
+
+  
+
+const list_all_token = () => {
+
+ 
+     $f7.request({
+                url: xrpl_tokens_url,
+                method : "GET",
+                timeout: 0,
+                success: function(data) {
+
+                  
+                  var res = JSON.parse(data);
+                  console.log(res);      
+
+                 issuers_data = res.data.issuers; 
+
+
+//shuffleArray(issuers_data);
+
+
+                /*  issuers_data.forEach(item => get_nft_by_issuer(item) );*/
+
+
+                 for (var i = 10 - 1; i >= 0; i--) {
+                                     
+                      get_nft_by_issuer(issuers_data[i]);
+
+                 }   
+
+
+                 lastItem = 10;             
+
+
+
+                  $update();
+                                
+ 
+                },
+                 
+
+              });
+  
+
+  
+
+
+}
+
+
+const loadMore = () => {
+
+
+      if (!allowInfinite) return;
+      allowInfinite = false;
+
+      setTimeout(function () {
+        if (lastItem >= total_tokens) {
+          hasMoreItems = false;
+          $update();
+          return;
+        }
+
+
+        let upto = lastItem + 20;
+
+        
+
+
+                 for (var i = upto - 1; i >= 0; i--) {
+                                     
+                      get_nft_by_issuer(issuers_data[i]);
+
+                 }   
+
+    
+       
+
+        allowInfinite = true;
+        lastItem += 20;
+
+
+        
+
+        
+
+
+       
+
+
+        $update();
+      }, 300);
+
+
+
+
+    }
+ 
+
+ const checkLogin = () => {
+
+      var storage = window.localStorage;
+      var login_status = storage.getItem('store_Login');
+
+ 
+      if(login_status == 'true')
+      {
+
+         user_login_status = true;
+         $update();
+      }
+      else
+      {
+          user_login_status = false;
+           
+      }
+
+}
+
+
+const get_wallet_detail = () => {
+
+ 
+  var xumm_address = localStorage.getItem('xumm_address');
+  
+  if(xumm_address) {  xumm_status = true; } 
+  wallet_address = xumm_address;
+  $update();
+
+
+} 
+
+
+
+const pageRefresh = (e, done) => {
+
+     setTimeout(() => { 
+      list_all_token();
+       checkLogin();
+ get_wallet_detail();
+       // Update state to rerender
+       $update();
+       // When loading done, we need to reset it
+        done();
+      }, 800);
+
+}
+
+
+ 
+ 
+
+$on('pageInit', (e, page) => {
+
+
+ 
+ list_all_token();
+ checkLogin();
+ get_wallet_detail();
+ 
+
+ });
+
+
+ 
+
+
+  return $render;
+}
+</script>
