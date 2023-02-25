@@ -1,5 +1,45 @@
 # XRP NFT
 
+
+# What it does
+xNFT is a Mobile application Which helps to Browser, View, and Interacts with Fungible Tokens and NFTs from XRP Ledger. The Transactions are Sign with help of XUMM app.
+
+# Non-Fungible Tokens:
+
+# Browse Entire NFTs available in XRPL
+NFT detail page will list all useful information about the NFT
+View Buy/Sell Offer for each NFTs
+You can create Buy Offer from the mobile app for NFT if you like.
+Mint Your Own NFTs from xNFT Mobile app
+View Your Own NFTs in a separate Page
+Fungible Tokens:
+
+# Browse entire Tokens available in XRPL
+Create TrustLine From the xNFT app
+View Token details using Bithomp, XRPScan.
+How we built it
+Build using Cordova, Javascript, JS, Node.js, Web3.storage for IPFS, XUMM for secure Transaction Sign. API from xrpldata.com . WordPress for xNFT User Management (Just for Registration and Login).
+
+# Challenges we ran into
+Challenges are a learning curve for me. I am new to Blockchain. But XRPL documentations really helpful to make it.
+
+# Accomplishments that we're proud of
+I am really proud to build xNFT app.
+
+# What's next for xNFT - Mobile App for NFTs and Tokens in XRP Ledger
+I would like to add more features to the xNFT app
+
+# Bulk NFT mint for Product/Lifetime memberships or Tickets
+Filter option to Browser NFTs page to easy search
+Share NFTs to Social media from xNFT app
+Issue Fungible token from app
+Mint above Issued Token as NFT ( Owner/Business who owns the token etc )
+Graphs For NFT buy/Sell Offers.
+
+--------------
+
+
+
 ## Framework7 CLI Options
 
 Framework7 app created with following options:
